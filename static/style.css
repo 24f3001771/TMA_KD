@@ -1,0 +1,126 @@
+
+/* margin are the distance between element border and surrounding element */
+/* padding is the space between the border and content. */
+/* flex, inline-block, display: inline-block (to particular element) or flex(given to header part or parent who is holding the divs)  */
+/* fr unit fractional lenght represnts flexible 1fr=100% of page, 2fr=50%,3fr=33.3% 4fr=25% */
+/* vh = view port area */
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #e6e8ed;
+    color: #666666;
+    font-family: "Montserrat",sans-serif;
+}
+
+.material-icons-outlined{
+    vertical-align: middle;
+    line-height: 1px;
+}
+
+.text-primary{
+    color: #666666;
+}
+.text-blue{
+    color: #246dec;
+}
+.text-red{
+    color: #cc3c43;
+}
+.text-green{
+    color: #367952;
+}
+.text-orange{
+    color: #f5b74f;
+}
+.font-weight-bold{
+    font-weight: 600;
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: 260px 1fr 1fr 1fr ;
+    grid-template-rows: 0.2fr 3fr;
+    grid-template-areas: 
+    "sidebar header header header"
+    "sidebar main main main" ;
+    height: 100vh; 
+}
+
+
+
+/*-----------------------Header---------------------*/
+
+.header{
+    grid-area: header;
+    height: 70px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px 0 30px;
+    box-shadow: 0 6px 7px -4px rgba(0,0,0,0.2);
+}
+
+
+/*--------------------------sidebar--------------------*/
+#sidebar{
+    grid-area: sidebar;
+    height: 100%;
+    background-color: #21232d;
+    color: #9799ab;
+    overflow-y: auto;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+}
+
+
+/*-----------------------------main----------------------------*/
+.main-container{
+    grid-area: main;
+    overflow-y: auto;
+    padding: 20px 20px;
+}
+
+
+#main #heading{
+    margin: auto;
+    padding: 15px;
+    border: 2px solid black;
+    background-color: rgb(208, 205, 205);
+}
+.form-body1{
+width: 500px;
+height: 450px;
+margin-left: 530px;
+margin-top: 37px;
+border: 1px solid black;
+border-radius: 5px;
+    
+}
+.form-body2{
+width: 500px;
+height: 630px;
+margin-left: 530px;
+margin-top: 37px;
+border: 1px solid black;
+border-radius: 5px;
+    
+}
+
+.form-body1 div{
+    padding: 10px;
+}
+.form-body2 div{
+    padding: 10px;
+}
+.form-body1 h2{
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+.form-body2 h2{
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
