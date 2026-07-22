@@ -1,86 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../static/style.css">
+{% extends "base.html" %}
 
-    <!-----------------montserattt------------------->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    {% block title %}
+        Admin Dashboard
+    {% endblock %}
 
-    <!---------------icons---------------->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    
-</head>
-<body>
-    <div class="grid-container">
 
-        <!---header--->
-        <header class="header">
-            <div class="menu-icon" onclick="opendSidebar()">
-            <span class="material-icons-outlined">menu</span>
-            </div>
-            <div class="header left">
-                <h2>Trekking Management Application</h2>
-            </div>
-            <div class="header-right">
-                <span class="material-icons-outlined">notifications</span>
-                <span class="material-icons-outlined">email</span>
-                <span class="material-icons-outlined">account_circle</span> Admin
-                <span class="material-icons-outlined">arrow_drop_down</span>
-            </div>
-        </header>
-        
-        <!--end header-->
-
-        <!--sidebar-->
-        <aside id="sidebar">
-            <div class="sidebar-title">
-                <div class="sidebar-brand">
-                    <span class="material-icons-outlined">filter_hdr</span> Trek Mate
-                </div>
-                <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
-            </div>
-            <ul class="sidebar-list">
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">dashboard</span> Dashboard
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">hiking</span> Treks
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">person</span> Staff
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">group</span> Users
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">event_available</span> Bookings
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">search</span> Search
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">analytics</span> Reports
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">settings</span> Settings
-                </li>
-                <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">logout</span> Logout
-                </li>
-            </ul>
-        </aside>
-        <!--end sidebar-->
-
+    {% block content %}
         <!--main-->
-        <main class="main-container"></main>
+        <main class="main-container">
+            <div class="main-title">
+                <p class="font-weight-bold">DASHBOARD</p>
+            </div>
+            <div class="main-cards">
+
+                <div class="card">
+                    <div class="class-inner">
+                        <p class="text-primary">Total Treks</p>
+                        <span class="material-icons-outlined text-blue ">landscape</span>
+                    </div>
+                    <span class="text-primary font-weight-bold">24</span>
+                </div>
+
+                <div class="card">
+                    <div class="class-inner">
+                        <p class="text-primary">Total Users</p>
+                        <span class="material-icons-outlined text-orange">person</span>
+                    </div>
+                    <span class="text-primary font-weight-bold">24</span>
+                </div>
+
+                <div class="card">
+                    <div class="class-inner">
+                        <p class="text-primary">Total Staff</p>
+                        <span class="material-icons-outlined text-green">groups</span>
+                    </div>
+                    <span class="text-primary font-weight-bold">24</span>
+                </div>
+
+                <div class="card">
+                    <div class="class-inner">
+                        <p class="text-primary">Total Bookings</p>
+                        <span class="material-icons-outlined text-red">event_available</span>
+                    </div>
+                    <span class="text-primary font-weight-bold">24</span>
+                </div>
+
+            </div>
+
+            <main-bottom class="table">
+            <div class="table-content">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-hover">
+                        <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">3</th>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>@social</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </main-bottom>
+        </main>
         <!--end main-->
-
-    </div>
-
-    <script src="../js/script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js"></script>
-</body>
-</html>
+    {% endblock %}
