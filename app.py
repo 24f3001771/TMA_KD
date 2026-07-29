@@ -1,62 +1,29 @@
-# #storing all configurations related to app
-# from flask import Flask,render_template,request
+#storing all configurations related to app
+from flask import Flask,render_template,request
 
-# app=None #creating app variable
-# # from application.database import db
+app=None #creating app variable
+from application.database import db #because i have defined db somwhere else
 
-# def create_app():  #return app object
-#     app=Flask(__name__)# have to consider this for the code of your server or app...all the methods of flask are applicable to this app also...making app as a flask object
-#     app.debug=True #detect changes and pin point the error
-#     # app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///e-dine.sqlite3'
-#     # db.init_app(app)
-#     # app.app_context().push()
-#     return app
+def create_app():  #return app object
+    app=Flask(__name__)# have to consider this for the code of your server or app...all the methods of flask are applicable to this app also...making app as a flask object
+    app.debug=True #detect changes and pin point the error
+    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///database.sqlite3' #database uri setup
+    db.init_app(app) #This connects SQLAlchemy with Flask.
+    app.app_context().push()#it should run with the context of database
+    return app
 
-# app= create_app() #every configuration made above is applicable to this app object 
-# # from application.controller import * #controller file resides in application folder
-
-
-
-# @app.route("/")
-# def login():
-#     return render_template("login.html")
-
-# if __name__== "__main__": # you have to run this app.py file only when it is invockd directly 
-#     app.run()
-
-from jinja2 import Template
-from flask import Flask,redirect,request,render_template,url_for,flash
-from flask_sqlalchemy import SQLAlchemy
+app= create_app() #every configuration made above is applicable to this app object 
+from application.controller import * #controller file resides in application folder and here we are attaching controller file with app.py
 
 
-app=Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///database.sqlite3' #database uri setup
-db=SQLAlchemy(app)
-
-
-@app.route("/dashboard")
-def open_dashboard():
-    return render_template("admin_dashboard.html")
-
-@app.route("/login",methods=["GET","POST"])
-def login():
-    if request.method=="POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        print(email,password)
-        return redirect("/dashboard")
-    return render_template("login.html")
-
-@app.route("/signup",methods=["GET","POST"])
-def signup():
-    if request.method=="POST":
-        pass
-        return redirect("/dashboard")
-    return render_template("signup.html")
-
-if __name__=="__main__":
-    # with app.app_context():
-    #     db.create_all()
-    app.run(debug=True)
-
+if __name__== "__main__": #if you are running this app from here only then only it will run , not by importing inside any other file
+    with app.app_context():
+        db.create_all()#create my database when my context of app is created
+        #by default create admin
+        Admin=User.query.filter_by(role='admin').first()
+        if Admin is None:
+            Admin=User(username='admin',email='dhullkhushi365@gmail.com',password='16102005',full_name='khushi dhull',phone='123456789',role='admin')
+            db.session.add(Admin)
+            db.session.commit()
+    app.run()
