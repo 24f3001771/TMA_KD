@@ -1,4 +1,5 @@
 from .database import db  #.database means current folder
+from sqlalchemy import Enum
 
 #assosiation or junction table (relationship table between staff and trek (many-to-many))
 trek_staff_assignment = db.Table("trek_staff_assignment",
@@ -17,7 +18,7 @@ class User(db.Model):
     password=db.Column(db.String(),nullable=False)
     full_name        = db.Column(db.String(), nullable=True)
     phone            = db.Column(db.String(), nullable=True)
-    role=db.Column(db.String(),nullable=False,default='trekker')# admin | trek_staff | trekker
+    role=db.Column(Enum('admin','trek_staff','trekker',name='user_role'),nullable=False,default='trekker')# admin | trek_staff | trekker
     is_blacklisted=db.Column(db.Boolean,default=False)
     blacklist_reason=db.Column(db.Text,nullable=True)
     is_active=db.Column(db.Boolean,default=True)
@@ -43,7 +44,7 @@ class Staff_profile(db.Model):
     expertise=db.Column(db.String(),nullable=True)
     certifications   = db.Column(db.Text, nullable=True)
     years_experience = db.Column(db.Integer, nullable=True)
-    approval_status  = db.Column(db.String(), nullable=False, default='pending')  # pending | approved | blacklisted
+    approval_status  = db.Column(Enum('pending','approved','blacklisted',name='approval_status'), nullable=False, default='pending')  # pending | approved | blacklisted
     is_available     = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime,default=db.func.now())
     updated_at = db.Column(db.DateTime,default=db.func.now())
@@ -66,7 +67,7 @@ class Trek(db.Model):
     max_slots       = db.Column(db.Integer, nullable=False, default=20)
     available_slots = db.Column(db.Integer, nullable=False, default=20)
     price           = db.Column(db.Numeric, nullable=False, default=0.0)
-    status          = db.Column(db.String(), nullable=False, default='pending')  # pending | approved | open | closed | completed | cancelled
+    status          = db.Column(Enum('pending','approved','open','closed','completed','cancelled',name='trek_status'),nullable=False, default='pending')  # pending | approved | open | closed | completed | cancelled
     created_at      = db.Column(db.DateTime, default=db.func.now())
     updated_at      = db.Column(db.DateTime, onupdate=db.func.now())
     
@@ -83,8 +84,8 @@ class Booking(db.Model):
     user_id             = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     trek_id             = db.Column(db.Integer, db.ForeignKey('trek.id'), nullable=False)
     booking_date        = db.Column(db.DateTime, default=db.func.now())
-    booking_status      = db.Column(db.String(), nullable=False, default='booked')   # booked | cancelled | completed
-    payment_status      = db.Column(db.String(), nullable=False, default='unpaid')   # unpaid | partial | paid | refunded
+    booking_status      = db.Column(Enum('booked','cancelled','completed',name='booking_status'), nullable=False, default='booked')   # booked | cancelled | completed
+    payment_status      = db.Column(Enum('unpaid','partial','paid','refunded',name='payment_status'), nullable=False, default='unpaid')   # unpaid | partial | paid | refunded
     num_participants    = db.Column(db.Integer, default=1)
     total_amount        = db.Column(db.Float, nullable=True)
     amount_paid         = db.Column(db.Float, default=0.0)
@@ -98,8 +99,6 @@ class Booking(db.Model):
     #relationships
     trek=db.relationship('Trek',back_populates='bookings',lazy=True)#one to many relationship #each booking belong to one trek
     user=db.relationship('User',back_populates='bookings',lazy=True)#one to many relationship 
-
-
 
 
 
