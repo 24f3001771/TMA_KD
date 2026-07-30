@@ -7,72 +7,69 @@ Admin Dashboard
 {% block header_title %}
 Admin Dashboard
 {% endblock %}
+
 {% block content %}
 <!--main-->
-<main class="main-container">
-    <div class="main-cards">
-
-        <div class="card">
-            <div class="class-inner">
-                <p class="text-primary">Total Treks</p>
-                <span class="material-icons-outlined text-blue ">landscape</span>
-            </div>
-            <span class="text-primary font-weight-bold">24</span>
+<div class="main-cards">
+    <div class="card">
+        <div class="class-inner">
+            <p class="text-primary">Total Treks</p>
+            <span class="material-icons-outlined text-blue ">landscape</span>
         </div>
-
-        <div class="card">
-            <div class="class-inner">
-                <p class="text-primary">Total Users</p>
-                <span class="material-icons-outlined text-orange">person</span>
-            </div>
-            <span class="text-primary font-weight-bold">24</span>
-        </div>
-
-        <div class="card">
-            <div class="class-inner">
-                <p class="text-primary">Total Staff</p>
-                <span class="material-icons-outlined text-green">groups</span>
-            </div>
-            <span class="text-primary font-weight-bold">24</span>
-        </div>
-
-        <div class="card">
-            <div class="class-inner">
-                <p class="text-primary">Total Bookings</p>
-                <span class="material-icons-outlined text-red">event_available</span>
-            </div>
-            <span class="text-primary font-weight-bold">24</span>
-        </div>
-
+        <span class="text-primary font-weight-bold">24</span>
     </div>
 
-    <main-bottom class="table">
-        <div class="table-content">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Booking ID</th>
-                        <th scope="col">User</th>
-                        <th scope="col">Trek</th>
-                        <th scope="col">Booking Date</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="table-hover">
-                    {%for booking in bookings%}
-                    <tr>
-                        <th scope="row">{{booking.id}}</th>
-                        <td>{{booking.user.username}}</td>
-                        <td>{{booking.assigned_treks}}</td>
-                        <td>{{booking.booking_date}}</td>
-                        <td>{{booking.assigned_treks.status}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="card">
+        <div class="class-inner">
+            <p class="text-primary">Total Users</p>
+            <span class="material-icons-outlined text-orange">person</span>
         </div>
-        <a href="#">View All Bookings -> </a>
-    </main-bottom>
-</main>
+        <span class="text-primary font-weight-bold">24</span>
+    </div>
+
+    <div class="card">
+        <div class="class-inner">
+            <p class="text-primary">Total Staff</p>
+            <span class="material-icons-outlined text-green">groups</span>
+        </div>
+        <span class="text-primary font-weight-bold">24</span>
+    </div>
+
+    <div class="card">
+        <div class="class-inner">
+            <p class="text-primary">Total Bookings</p>
+            <span class="material-icons-outlined text-red">event_available</span>
+        </div>
+        <span class="text-primary font-weight-bold">24</span>
+    </div>
+
+</div>
+<section class="table-section">
+    <div class="table-content">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Booking ID</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Trek</th>
+                    <th scope="col">Booking Date</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody class="table-hover">
+                {%for booking in bookings%}
+                <tr>
+                    <th scope="row">{{booking.id}}</th>
+                    <td>{{booking.user.username}}</td>
+                    <td>{{booking.trek}}</td>
+                    <td>{{booking.booking_date}}</td>
+                    <td>{{booking.booking_status}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="#">View All Bookings -> </a>
+</section>
 <!--end main-->
 {% endblock %}

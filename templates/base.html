@@ -22,9 +22,6 @@
 
         <!---header--->
         <header class="header">
-            <div class="menu-icon" onclick="opendSidebar()">
-            <span class="material-icons-outlined">menu</span>
-            </div>
             <div class="header left">
                 <h2>Trekking Management Application</h2>
             </div>
@@ -44,35 +41,34 @@
                 <div class="sidebar-brand">
                     <span class="material-icons-outlined">filter_hdr</span> Trek Mate
                 </div>
-                <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
             </div>
             <ul class="sidebar-list">
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">dashboard</span> Dashboard
+                    <span class="material-icons-outlined">dashboard</span> <a href="/admin_dashboard">Dashboard</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">hiking</span> Treks
+                    <span class="material-icons-outlined">hiking</span> <a href="/admin_treks">Treks</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">person</span> Staff
+                    <span class="material-icons-outlined">person</span> <a href="/a_staff">Staff</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">group</span> Users
+                    <span class="material-icons-outlined">group</span> <a href="">Users</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">event_available</span> Bookings
+                    <span class="material-icons-outlined">event_available</span> <a href="">Bookings</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">search</span> Search
+                    <span class="material-icons-outlined">search</span> <a href="">Search</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">analytics</span> Reports
+                    <span class="material-icons-outlined">analytics</span><a href="">Reports</a> 
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">settings</span> Settings
+                    <span class="material-icons-outlined">settings</span><a href="">Settings</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">logout</span> Logout
+                    <span class="material-icons-outlined">logout</span><a href="/login">Logout</a> 
                 </li>
             </ul>
         </aside>
@@ -80,6 +76,16 @@
 
         <!--main-->
         <main class="main-container">
+            <div class="main-title">
+                <div>
+                <h2>{% block header_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div>
+                    {% block header_button %}
+                    {% endblock %}
+                </div>
+            </div>
+            
             {% block content %}
 
             {% endblock %}
@@ -88,7 +94,5 @@
     
     </div>
 
-    <script src="../js/script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js"></script>
 </body>
 </html>

@@ -27,3 +27,4 @@ if __name__== "__main__": #if you are running this app from here only then only 
             db.session.add(Admin)
             db.session.commit()
     app.run()
+    

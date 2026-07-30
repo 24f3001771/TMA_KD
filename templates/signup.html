@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,46 +8,47 @@
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
+
 <body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <div id="main">
         <div id="heading">
             <h2>Trekking Management Application</h2>
         </div>
         <div class="form-body2">
-            <h2>Register Form</h2>
-            <div class="mb-3">
-                <label for="Input1" class="form-label">Username</label>
-                <input type="text" class="form-control" id="Input1" placeholder="Full Name">
-           </div>
-           <div class="mb-3">
-                <label for="Input2" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="Input2" placeholder="Email">
-           </div>
-           <div class="mb-3">
-                <label for="Input3" class="form-label">Password</label>
-                <input type="password" class="form-control" id="Input3" placeholder="Password">
-           </div>
-            <div class="mb-3">
-                <label for="Input4" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="Input" placeholder="Confirm Password">
-            </div>
-
-            <div class="dropdown">
-            I am a 
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                --Select a Role--
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Trekker</a>
-                <a class="dropdown-item" href="#">Trek Staff</a>
-            </div>
-            </div>
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary" value="Register"><br>
-                Already have an account? <a href="login.html">Login here</a>
-            </div>
+            <form action="/signup" method="post">
+                <h2>Register Form</h2>
+                <div class="mb-3">
+                    <label for="Input1" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="Input1" name="username" placeholder="Username">
+                </div>
+                <div class="mb-3">
+                    <label for="Input2" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="Input2" name="email" placeholder="Email">
+                </div>
+                <div class="mb-3">
+                    <label for="Input3" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="Input3" name="password" placeholder="Password">
+                </div>
+                <div class="mb-3">
+                    <label for="Input4" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="Input" name="cf_password"
+                        placeholder="Confirm Password">
+                </div>
+                <div class="dropdown">
+                <select class="form-select" >
+                    <option selected>Select Role</option>
+                    <option value="1">Trekker</option>
+                    <option value="2">Trek Staff</option>
+                </select>
+                </div>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-primary" value="Register"><br>
+                    Already have an account? <a href="/login">Login here</a>
+                </div>
+            </form>
         </div>
     </div>
 </body>
+
 </html>

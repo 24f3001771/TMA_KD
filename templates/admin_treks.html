@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Treks
+{% endblock %}
+
+{% block header_title %}
+Treks
+{% endblock %}
+
+{% block header_button %}
+<a class="btn btn-primary" href="#" role="button"> + Add New Trek</a>
+{% endblock %}
+
+{% block content %}
+<section class="table-section">
+    <div class="table-content">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Trek Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Difficulty</th>
+                    <th scope="col">Slots</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-hover">
+                {%for trek in treks %}
+                <tr>
+                    <th scope="row">{{trek.id}}</th>
+                    <td>{{trek.name}}</td>
+                    <td>{{trek.location}}</td>
+                    <td>{{trek.difficulty}}</td>
+                    <td>{{trek.available_slots}}</td>
+                    <td>{{trek.status}}</td>
+                    <td>
+                        <span class="material-symbols-outlined">
+                            edit
+                        </span>
+                        <span class="material-symbols-outlined">
+                            delete
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
