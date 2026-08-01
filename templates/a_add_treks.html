@@ -1,12 +1,118 @@
 {% extends "base.html" %}
 
-    {% block title %}
-      Add/Edit Treks
-    {% endblock %}
+{% block title %}
+Add/Edit Treks
+{% endblock %}
 
-    {% block header_title %}
-        Add New Treks
-    {% endblock %}
 
-    {% block content %}
-    {% endblock %}
+{% block head_css %}
+<style>
+  .form-add-treks {
+    box-sizing: border-box;
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(235, 237, 239);
+  }
+
+  .form-add-treks .left {
+    height: 450px;
+    border: 1px solid #9799ab;
+    border-radius: 5px;
+    width: 500px;
+  }
+
+  .form-add-treks .right {
+    height: 450px;
+    border: 1px solid #9799ab;
+    border-radius: 5px;
+    width: 500px;
+  }
+
+  .left .l {
+    margin: 20px;
+    padding: 10px;
+  }
+
+  .right .r {
+    margin: 20px;
+    padding: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block header_title %}
+Add New Trek
+{% endblock %}
+
+{% block content %}
+
+<form action="/add_treks" class="form-add-treks">
+  <div class="left">
+    <div class="l">
+      <label for="name">Trek Name</label>
+      <input type="text" id="name" name="tname" required>
+    </div>
+    <div class="l">
+      <label for="loc">Location</label>
+      <input type="text" name="loc" id="loc">
+    </div>
+    <div class="l">
+      <label for="level">Difficulty</label>
+      <select name="values" id="level">
+        <option value="easy">Easy</option>
+        <option value="moderate">Moderate</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+    <div class="l">
+      <label for="duration">Duration(Days)</label>
+      <input type="number" id="duration" name="duration" value="days">
+    </div>
+    <div class="l">
+      <label for="slots">Available Slots</label>
+      <input type="number" name="aslots" id="slots" value="no.ofslots">
+    </div>
+  </div>
+  <div class="right">
+    <div class="r">
+      <label for="date">Start Date</label>
+      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy">
+    </div>
+    <div class="r">
+      <label for="endtime">End Date</label>
+      <input type="date" name="endtime" id="endtime" placeholder="dd/mm/yyyy">
+    </div>
+    <div class="r">
+      <label for="assign_staff">Assign Staff</label>
+      <select name="staff_id" id="assign_staff">
+        <option value=""></option>
+      </select>
+    </div>
+    <div class="r">
+      <label for="status">Status</label>
+      <select name="status" id="status">
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="r">
+      <label for="message">Description</label>
+      <textarea id="message" name="message" rows="4" cols="30"></textarea>
+    </div>
+  </div>
+</form>
+
+<div class="buttons"
+  style="display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; margin-top: 20px;">
+  <button type="button" class="btn btn-danger">Cancel</button>
+  <button type="button" class="btn btn-success">Save</button>
+</div>
+{% endblock %}

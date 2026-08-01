@@ -4,43 +4,60 @@
 Admin Dashboard
 {% endblock %}
 
+{% block head_css %}
+<style>
+    a {
+        text-decoration: none;
+        color: #9799ab;
+
+    }
+
+    .text-most-important {
+        color: #363434;
+        font-weight: bolder;
+    }
+</style>
+{% endblock %}
+
 {% block header_title %}
 Admin Dashboard
 {% endblock %}
+
+
 
 {% block content %}
 <!--main-->
 <div class="main-cards">
     <div class="card">
         <div class="class-inner">
-            <p class="text-primary">Total Treks</p>
+            <p class="text-most-important">Total Treks</p>
             <span class="material-icons-outlined text-blue ">landscape</span>
         </div>
-        <span class="text-primary font-weight-bold">24</span>
+        <span class="text-most-important font-weight-bold">{{treks_count}}</span>
     </div>
 
     <div class="card">
         <div class="class-inner">
-            <p class="text-primary">Total Users</p>
+            <p class="text-most-important">Total Users</p>
             <span class="material-icons-outlined text-orange">person</span>
         </div>
-        <span class="text-primary font-weight-bold">24</span>
+        <span class="text-most-important font-weight-bold">{{user_count}}</span>
     </div>
 
     <div class="card">
         <div class="class-inner">
-            <p class="text-primary">Total Staff</p>
+            <p class="text-most-important">Total Staff</p>
             <span class="material-icons-outlined text-green">groups</span>
         </div>
-        <span class="text-primary font-weight-bold">24</span>
+        <span class="text-most-important font-weight-bold">{{staff_count}}</span>
     </div>
 
     <div class="card">
         <div class="class-inner">
-            <p class="text-primary">Total Bookings</p>
+            <p class="text-most-important">Total Bookings</p>
             <span class="material-icons-outlined text-red">event_available</span>
         </div>
-        <span class="text-primary font-weight-bold">24</span>
+        <span class="text-most-important font-weight-bold">{{bookings_count}}</span>
     </div>
 
 </div>
@@ -57,7 +74,7 @@ Admin Dashboard
                 </tr>
             </thead>
             <tbody class="table-hover">
-                {%for booking in bookings%}
+                {%for booking in recent_bookings%}
                 <tr>
                     <th scope="row">{{booking.id}}</th>
                     <td>{{booking.user.username}}</td>
@@ -69,7 +86,12 @@ Admin Dashboard
             </tbody>
         </table>
     </div>
-    <a href="#">View All Bookings -> </a>
+
+    <div class="button" style="display:flex; justify-content: flex-end;">
+        <a href="#" style="margin-top:10px; text-decoration: none;">
+            <button type="button" class="btn btn-info">View All Bookings </button>
+        </a>
+    </div>
 </section>
 <!--end main-->
 {% endblock %}

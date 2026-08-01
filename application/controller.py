@@ -13,15 +13,15 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         #check if user exists or nor?
-        this_user=User.query.filter_by(username=username).first()
-        if this_user:
-            if this_user.password==password:
-                if this_user.role=="admin":
-                    return redirect('/admin_dashboard')
-                elif this_user.role=="trek staff":
-                    return redirect(f"/home/{this_user.id}")
+        user=User.query.filter_by(username=username).first()
+        if user:
+            if user.password==password:
+                if user.role=="admin":
+                    return redirect('/admin')
+                elif user.role=="trek staff":
+                    return redirect(f"/home/{user.id}")
                 else:
-                    return redirect(f"/home/{this_user.id}")#trekker
+                    return redirect(f"/home/{user.id}")#trekker
             else:
                 return render_template("incorrect_p.html")
         else:
@@ -32,7 +32,46 @@ def login():
 def signup():
     if request.method=="POST":
         username=request.form.get("username")
-        
+        email=request.form.get("email")
+        password=request.form.get("password")
+        role=request.form.get("role")
+        #as i am signing up so i want to check there should be unique email and username
+        user_name=User.query.filter_by(username=username).first()
+        user_email=User.query.filter_by(email=email).first()
+        if user_name or user_email:
+            return render_template("already.html")
+        else:
+            new_user=User(username=username,email=email,password=password,role=role)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect("/login")
     return render_template("signup.html")
 
+@app.route("/admin")
+def admin():
+    user=User.query.filter_by(role="admin").first()
+    recent_bookings=Booking.query.order_by(Booking.created_at.desc()).limit(4).all()
+    treks_count=Trek.query.count()
+    user_count=User.query.count()
+    staff_count=User.query.filter_by(role="trek staff").count()
+    bookings_count=Booking.query.count()
+    return render_template("admin_dashboard.html",recent_bookings=recent_bookings,treks_count=treks_count,user_count=user_count,staff_count=staff_count,bookings_count=bookings_count)
 
+
+@app.route("/treks")
+def treks():
+    treks=Trek.query.all()
+    return render_template("admin_treks.html",treks=treks)
+
+@app.route("/add_treks")
+def add_trek():
+    return render_template("a_add_treks.html")
+
+@app.route("/home/<int:user_id>")
+def home(user_id):
+    this_user=User.query.get(user_id)
+
+
+
+#Model.query.count()
+#Model.query.filter_by(condition).count()

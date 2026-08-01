@@ -7,7 +7,56 @@
     <title>Register Page</title>
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <style>
+        #main #heading {
+            margin: auto;
+            padding: 15px;
+            border: 2px solid black;
+            background-color: rgb(208, 205, 205);
+        }
+
+        .form-body2 {
+            width: 500px;
+            height: 630px;
+            margin-left: 530px;
+            margin-top: 37px;
+            border: 1px solid black;
+            border-radius: 5px;
+
+        }
+
+        .form-body2 div {
+            padding: 10px;
+        }
+
+        .form-body2 h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+
+        .match {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .mismatch {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success {
+            border: 2px solid green !important;
+        }
+
+        .error {
+            border: 2px solid red !important;
+        }
+    </style>
 </head>
+
 
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
@@ -20,27 +69,29 @@
                 <h2>Register Form</h2>
                 <div class="mb-3">
                     <label for="Input1" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="Input1" name="username" placeholder="Username">
+                    <input type="text" class="form-control" id="Input1" name="username" placeholder="Username" required>
                 </div>
                 <div class="mb-3">
                     <label for="Input2" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="Input2" name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="Input2" name="email" placeholder="Email" required>
                 </div>
                 <div class="mb-3">
-                    <label for="Input3" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="Input3" name="password" placeholder="Password">
-                </div>
-                <div class="mb-3">
-                    <label for="Input4" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="Input" name="cf_password"
-                        placeholder="Confirm Password">
+                    <label for="pass" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="pass" name="password" placeholder="Password"
+                        oninput="CheckMatch()" required>
+                    <br>
+                    <input type="password" class="form-control" id="confirm" name="cf_password"
+                        placeholder="Confirm Password" oninput="CheckMatch()" required>
+                    <p id="status"></p>
                 </div>
                 <div class="dropdown">
-                <select class="form-select" >
-                    <option selected>Select Role</option>
-                    <option value="1">Trekker</option>
-                    <option value="2">Trek Staff</option>
-                </select>
+                    <label for="role">--- I am ---</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option selected>Select Role</option>
+                        <option value="trekker">trekker</option>
+                        <option value="trek staff">trek staff</option>
+                        <option value="admin">admin</option>
+                    </select>
                 </div>
                 <div class="text-center">
                     <input type="submit" class="btn btn-primary" value="Register"><br>
@@ -49,6 +100,32 @@
             </form>
         </div>
     </div>
+    <script>
+        function CheckMatch() {
+            const pass = document.getElementById("pass").value;
+            const confirm = document.getElementById("confirm").value;
+
+            const status = document.getElementById("status");
+            const confirmBox = document.getElementById("confirm");
+
+            if (pass == confirm && pass != "") {
+                status.textContent = "✓ Passwords Match";
+                status.className = "match";
+
+                confirmBox.classList.remove("error");
+                confirmBox.classList.add("success");
+
+            }
+            else {
+                status.textContent = "✗ Passwords Do Not Match";
+                status.className = "mismatch";
+
+                confirmBox.classList.remove("success");
+                confirmBox.classList.add("error");
+
+            }
+        }
+    </script>
 </body>
 
 </html>

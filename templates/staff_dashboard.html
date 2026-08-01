@@ -1,12 +1,72 @@
 {% extends "staff_base.html" %}
 
-    {% block title %}
-      Staff Dashboard
-    {% endblock %}
+{% block title %}
+Staff Dashboard
+{% endblock %}
 
-    {% block header_title %}
-        My Dashboard
-    {% endblock %}
+{% block header_title %}
+My Dashboard
+{% endblock %}
 
-    {% block content %}
-    {% endblock %}
+{% block content %}
+<div class="main-cards">
+  <div class="card">
+    <div class="class-inner">
+      <p class="text-most-important">Assigned Treks</p>
+      <span class="material-icons-outlined text-blue ">landscape</span>
+    </div>
+    <span class="text-most-important font-weight-bold">{{treks_count}}</span>
+  </div>
+
+  <div class="card">
+    <div class="class-inner">
+      <p class="text-most-important">Total Participants</p>
+      <span class="material-icons-outlined text-orange">person</span>
+    </div>
+    <span class="text-most-important font-weight-bold">{{user_count}}</span>
+  </div>
+
+  <div class="card">
+    <div class="class-inner">
+      <p class="text-most-important">Open Treks</p>
+      <span class="material-icons-outlined text-blue ">landscape</span>
+    </div>
+    <span class="text-most-important font-weight-bold">{{staff_count}}</span>
+  </div>
+</div>
+<div class="main-bottom">
+  <div class="heading-title">
+    <h3>My Assigned Treks</h3>
+  </div>
+  <section class="table-section">
+    <div class="table-content">
+      <table class="table table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Trek Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Participants</th>
+            <th scope="col">Slots</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-hover">
+          {%for trek in treks %}
+          <tr>
+            <th scope="row">{{trek.name}}</th>
+            <td>{{trek.location}}</td>
+            <td>{{trek.difficulty}}</td>
+            <td>{{trek.available_slots}}</td>
+            <td>{{trek.status}}</td>
+            <td>
+              <button type="button" class="btn btn-outline-primary btn-lg">Primary</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
