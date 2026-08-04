@@ -19,6 +19,8 @@
 
     <!---------------icons---------------->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    {% block head_css %}
+    {% endblock %}
 
 </head>
 
@@ -33,7 +35,7 @@
             <div class="header-right">
                 <span class="material-icons-outlined">notifications</span>
                 <span class="material-icons-outlined">email</span>
-                <span class="material-icons-outlined">account_circle</span> Admin
+                <span class="material-icons-outlined">account_circle</span>{{user.username}}
                 <span class="material-icons-outlined">arrow_drop_down</span>
             </div>
         </header>

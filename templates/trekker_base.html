@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        Trek Mate
+        {% endblock %}
+    </title>
+
+
+    <!------------------bootstrap link--------------------------->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../static/style.css">
+
+    <!-----------------montserattt------------------->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <!---------------icons---------------->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        a {
+            text-decoration: none;
+            color: #9799ab;
+
+        }
+
+        .text-most-important {
+            color: #363434;
+            font-weight: bolder;
+        }
+    </style>
+    {% block head_css %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="grid-container">
+
+        <!---header--->
+        <header class="header">
+            <div class="header left">
+                <h2>Trekking Management Application</h2>
+            </div>
+            <div class="header-right">
+                <span class="material-icons-outlined">notifications</span>
+                <span class="material-icons-outlined">account_circle</span> {{user.username}}
+                <span class="material-icons-outlined">arrow_drop_down</span>
+            </div>
+        </header>
+
+        <!--end header-->
+
+        <!--sidebar-->
+        <aside id="sidebar">
+            <div class="sidebar-title">
+                <div class="sidebar-brand">
+                    <span class="material-icons-outlined">filter_hdr</span> Trek Mate
+                </div>
+            </div>
+            <ul class="sidebar-list">
+                <li class="sidebar-list-item">
+                    <span class="material-icons-outlined">dashboard</span> <a href="/admin">Dashboard</a>
+                </li>
+                <li class="sidebar-list-item">
+                    <span class="material-icons-outlined">hiking</span> <a href="/treks">Browse Treks</a>
+                </li>
+                <li class="sidebar-list-item">
+                    <span class="material-icons-outlined">person</span> <a href="">Profile</a>
+                </li>
+                <li class="sidebar-list-item">
+                    <span class="material-icons-outlined">event_available</span> <a href=""> My Bookings</a>
+                </li>
+                <li class="sidebar-list-item">
+                    <span class="material-symbols-outlined">history</span> <a href="">History</a>
+                </li>
+                <li class="sidebar-list-item">
+                    <span class="material-icons-outlined">logout</span><a href="/login">Logout</a>
+                </li>
+            </ul>
+        </aside>
+        <!--end sidebar-->
+
+        <!--main-->
+        <main class="main-container">
+            <div class="main-title">
+                <div>
+                    <h2>{% block header_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div>
+                    {% block header_button %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            {% block content %}
+            {% endblock %}
+        </main>
+        <!--end main-->
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js"></script>
+</body>
+
+</html>

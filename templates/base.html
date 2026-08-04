@@ -47,10 +47,7 @@
                 <h2>Trekking Management Application</h2>
             </div>
             <div class="header-right">
-                <span class="material-icons-outlined">notifications</span>
-                <span class="material-icons-outlined">email</span>
-                <span class="material-icons-outlined">account_circle</span> Admin
-                <span class="material-icons-outlined">arrow_drop_down</span>
+                <span class="material-icons-outlined">account_circle</span>{{user.username}}
             </div>
         </header>
 
@@ -68,16 +65,16 @@
                     <span class="material-icons-outlined">dashboard</span> <a href="/admin">Dashboard</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">hiking</span> <a href="/treks">Treks</a>
+                    <span class="material-icons-outlined">hiking</span> <a href="/admin/treks">Treks</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">person</span> <a href="/staff">Staff</a>
+                    <span class="material-icons-outlined">person</span> <a href="/admin/staff">Staff</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">group</span> <a href="/users">Users</a>
+                    <span class="material-icons-outlined">group</span> <a href="/admin/users">Users</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">event_available</span> <a href="">Bookings</a>
+                    <span class="material-icons-outlined">event_available</span> <a href="/admin/bookings">Bookings</a>
                 </li>
                 <li class="sidebar-list-item">
                     <span class="material-icons-outlined">search</span> <a href="">Search</a>

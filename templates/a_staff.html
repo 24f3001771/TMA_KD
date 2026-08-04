@@ -1,12 +1,90 @@
 {% extends "base.html" %}
 
-    {% block title %}
-      Manage Staff
-    {% endblock %}
+{% block title %}
+Manage Staff
+{% endblock %}
 
-    {% block header_title %}
-        Staff Requests
-    {% endblock %}
+{% block header_title %}
+Staff Requests
+{% endblock %}
 
-    {% block content %}
-    {% endblock %}
+{% block head_css %}
+<style>
+  .status-tabs {
+    display: flex;
+    margin: 20px 0;
+  }
+
+  .tab {
+    text-decoration: none;
+    color: black;
+    padding: 12px 30px;
+    border: 1px solid #ddd;
+    background: white;
+  }
+
+  .tab:active {
+    color: #0d6efd;
+    font-weight: bold;
+    border-bottom: 3px solid #0d6efd;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="status">
+  <a href="admin/staff?status=pending" class="tab ">
+    pending({{staff_pending}})
+  </a>
+  <a href="admin/staff?status=approved" class="tab ">
+    Approved ({{staff_approved}})
+  </a>
+  <a href="admin/staff?status=blacklisted" class="tab ">
+    Blacklisted ({{staff_blacklisted}})
+  </a>
+</div>
+<div class="table-content">
+
+  <table class="table">
+
+    <thead>
+      <tr>
+        <th>Staff ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% for staff in staffs %}
+
+      <tr>
+        <td>{{ staff.id }}</td>
+        <td>{{ staff.user.username }}</td>
+        <td>{{ staff.user.email }}</td>
+        <td>{{ staff.contact_details }}</td>
+        <td>{{ staff.approval_status}}</td>
+
+        <td>
+          <a href="/approve/{{staff.id}}" class="btn btn-success btn-sm">
+            Approve
+          </a>
+          <a href="/reject/{{staff.id}}" class="btn btn-danger btn-sm">
+            Reject
+          </a>
+        </td>
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+{% endblock %}

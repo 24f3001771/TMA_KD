@@ -9,37 +9,71 @@ Add/Edit Treks
 <style>
   .form-add-treks {
     box-sizing: border-box;
-    height: 500px;
+    height: 100vh;
     display: flex;
+    width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    background-color: rgb(235, 237, 239);
+    background:white;
+    border-radius:12px;
+    padding:25px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    
   }
 
-  .form-add-treks .left {
-    height: 450px;
-    border: 1px solid #9799ab;
-    border-radius: 5px;
-    width: 500px;
+  .left , .right{
+    flex:1;
+  }
+  .form-add-treks .left,.form-add-treks .right {
+    height: 500px;
+    
   }
 
-  .form-add-treks .right {
-    height: 450px;
-    border: 1px solid #9799ab;
-    border-radius: 5px;
-    width: 500px;
-  }
 
   .left .l {
     margin: 20px;
     padding: 10px;
+    margin-bottom:22px;
   }
 
   .right .r {
     margin: 20px;
     padding: 10px;
+    margin-bottom:22px;
+  }
+  .r{
+    display: flex;
+    align-items:center;
+    margin-bottom: 10px;
+  }
+  .r label{
+    width: 150px;
+    font-weight: 500;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  .l{
+    display: flex;
+    align-items:center;
+    margin-bottom: 10px;
+  }
+  .l label{
+    width: 150px;
+    font-weight: 500;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  .r input,
+  .r select{
+    flex: 1;
+  }
+  .l input,
+  .l select{
+    flex: 1;
+  }
+  textarea{
+    width: 100%;
+    min-height:120px;
   }
 </style>
 {% endblock %}
@@ -50,7 +84,7 @@ Add New Trek
 
 {% block content %}
 
-<form action="/add_treks" class="form-add-treks">
+<form action="/admin/add_treks" class="form-add-treks" method="post">
   <div class="left">
     <div class="l">
       <label for="name">Trek Name</label>
@@ -73,8 +107,8 @@ Add New Trek
       <input type="number" id="duration" name="duration" value="days">
     </div>
     <div class="l">
-      <label for="slots">Available Slots</label>
-      <input type="number" name="aslots" id="slots" value="no.ofslots">
+      <label for="slots">Maximum Slots</label>
+      <input type="number" name="max slots" id="slots" value="no.ofslots">
     </div>
   </div>
   <div class="right">
@@ -88,8 +122,10 @@ Add New Trek
     </div>
     <div class="r">
       <label for="assign_staff">Assign Staff</label>
-      <select name="staff_id" id="assign_staff">
-        <option value=""></option>
+      <select name="staff_ids" id="assign_staff" multiple size="2" style="height: 120px; width: 100%;">
+        {% for staff in staffs %}
+        <option value="{{staff.id}}">{{staff.user.username}} ({{ staff.expertise }})</option>
+        {% endfor %}
       </select>
     </div>
     <div class="r">
@@ -105,14 +141,14 @@ Add New Trek
     </div>
     <div class="r">
       <label for="message">Description</label>
-      <textarea id="message" name="message" rows="4" cols="30"></textarea>
+      <textarea id="message" name="message" rows="4" ></textarea>
     </div>
   </div>
+  <div class="buttons"
+  style="gap: 15px; margin-top: 20px; align-self: flex-end; align-items:end;">
+  <a href="/admin/treks" class="btn btn-danger">Cancel</a>
+  <button type="submit" class="btn btn-success">Save</button>
+</div>
 </form>
 
-<div class="buttons"
-  style="display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; margin-top: 20px;">
-  <button type="button" class="btn btn-danger">Cancel</button>
-  <button type="button" class="btn btn-success">Save</button>
-</div>
 {% endblock %}

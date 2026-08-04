@@ -9,7 +9,7 @@ Treks
 {% endblock %}
 
 {% block header_button %}
-<a class="btn btn-primary" href="/add_treks" role="button"> + Add New Trek</a>
+<a class="btn btn-primary" href="/admin/add_treks" role="button"> + Add New Trek</a>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +28,7 @@ Treks
                 </tr>
             </thead>
             <tbody class="table-hover">
-                {%for trek in treks %}
+                {% for trek in treks %}
                 <tr>
                     <th scope="row">{{trek.id}}</th>
                     <td>{{trek.name}}</td>
@@ -37,12 +37,8 @@ Treks
                     <td>{{trek.available_slots}}</td>
                     <td>{{trek.status}}</td>
                     <td>
-                        <span class="material-symbols-outlined">
-                            edit
-                        </span>
-                        <span class="material-symbols-outlined">
-                            delete
-                        </span>
+                        <a href="" class="btn btn-primary">Edit</a>
+                        <a href="" class="btn btn-danger">delete</a>
                     </td>
                 </tr>
                 {% endfor %}

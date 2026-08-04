@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff details</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <style>
+        #main #heading {
+            margin: auto;
+            padding: 15px;
+            border: 2px solid black;
+            background-color: rgb(208, 205, 205);
+        }
+
+        .form-body {
+            width: 600px;
+            height: 800px;
+            margin-left: 530px;
+            margin-top: 37px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .form-body div {
+            padding: 10px;
+        }
+
+        .form-body h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="heading">
+            <h2>Trekking Management Application</h2>
+        </div>
+        <div class="form-body">
+            <form action="/staff/{{staff.id}}/profile" method="post">
+                <h2>Staff Details</h2>
+                <div class="mb-3">
+                    <label for="Input1" class="form-label">Contact Details</label>
+                    <input type="text" class="form-control" id="Input1" name="contact" >
+                </div>
+                <div class="mb-3">
+                    <label for="Input2" class="form-label">Bio</label>
+                    <textarea name="bio" class="form-control" id="Input2" rows="4"></textarea> 
+                </div>
+                <div class="mb-3">
+                    <label for="Input3" class="form-label">Expertise</label>
+                    <input type="text" class="form-control" id="Input3" name="expertise" >
+                </div>
+                <div class="mb-3">
+                    <label for="Input4" class="form-label">Certifications</label>
+                    <input type="text" class="form-control" id="Input4" name="certifications" >
+                </div>
+                <div class="mb-3">
+                    <label for="Input5" class="form-label">Years Experience</label>
+                    <input type="number" class="form-control" id="Input5" name="experience" >
+                </div>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-success btn-lg" value="Submit"><br>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
+

@@ -18,7 +18,7 @@ class User(db.Model):
     password=db.Column(db.String(),nullable=False)
     full_name        = db.Column(db.String(), nullable=True)
     phone            = db.Column(db.String(), nullable=True)
-    role=db.Column(Enum('admin','trek staff','trekker',name='user_role'),nullable=False,default='trekker')# admin | trek_staff | trekker
+    role=db.Column(Enum('admin','trek staff','trekker',name='user_role'),nullable=False,default='trekker')# admin | trek staff | trekker
     is_blacklisted=db.Column(db.Boolean,default=False)
     blacklist_reason=db.Column(db.Text,nullable=True)
     is_active=db.Column(db.Boolean,default=True)

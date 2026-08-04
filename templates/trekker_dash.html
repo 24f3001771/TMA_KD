@@ -1,0 +1,111 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+User(Trekker) Dashboard
+{% endblock %}
+
+{% block header_title %}
+Welcome {{user.username}}!
+{% endblock %}
+
+{% block head_css %}
+<style>
+    .filter-section {
+        display: flex;
+        flex-direction: row;
+        gap: 40px;
+        margin-bottom: 25px;
+    }
+
+    .filter-section select {
+        width: 250px;
+        gap: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="filter-section">
+    <h3>Available Treks</h3>
+    <div class="buttons" style="display: flex;">
+        <form action="/home/{{user.id}}" method="get">
+            <select name="difficulty" class="form-select">
+                <option value="">All Difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <select name="locations" class="form-select">
+                <option value="">All Locations</option>
+                <option value="Nepal">Nepal</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="Himachal">Himachal</option>
+            </select>
+        </form>
+    </div>
+
+</div>
+<section class="table-section">
+    <div class="table-content">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Trek Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Difficulty</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col">Available Slots</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-hover">
+                {%for trek in treks %}
+                <tr>
+                    <th scope="row">{{trek.name}}</th>
+                    <td>{{trek.location}}</td>
+                    <td>{{trek.difficulty}}</td>
+                    <td>{{trek.available_slots}}</td>
+                    <td>{{trek.status}}</td>
+                    <td>
+                        <a href="/book/{{ trek.id }}" class="btn btn-primary btn-sm">
+                            Book Now
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<div class="mybookings">
+    <h3>My Bookings</h3>
+</div>
+<section class="table-section">
+    <div class="table-content">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Trek Name</th>
+                    <th scope="col">Booking Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-hover">
+                {%for trek in treks %}
+                <tr>
+                    <th scope="row">{{trek.name}}</th>
+                    <td>{{trek.}}</td>
+                    <td>{{trek.}}</td>
+                    <td>
+                        <a href="/booking/{{ booking.id }}" class="btn btn-outline-primary btn-sm">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
