@@ -87,6 +87,17 @@ def manage_treks():
     user=User.query.filter_by(role="admin").first()
     return render_template("admin_treks.html",treks=treks,user=user)
 
+@app.route("/delete/<int:trek_id>/trek")
+def delete(trek_id):
+    trek=Trek.query.get(trek_id)
+    if not trek:
+        return render_template("not_found_t.html")
+    db.session.delete(trek)
+    db.session.commit()
+
+    return redirect("/admin/treks")
+
+
 @app.route("/admin/add_treks", methods=["GET", "POST"])
 def add_trek():
 
@@ -112,7 +123,42 @@ def add_trek():
         # flash("Trek added successfully.")
         return redirect(url_for("manage_treks"))
     
-    return render_template("a_add_treks.html",user=user,staffs=staffs)
+    return render_template("a_add_treks.html",trek=None,user=user,staffs=staffs)
+
+@app.route("/update/<int:trek_id>/trek",methods=['POST','GET'])
+def update_trek(trek_id):
+    trek=Trek.query.get(trek_id)
+    user=User.query.filter_by(role='admin').first()
+    staffs=Staff_profile.query.filter_by(approval_status='approved').all()
+    if not trek:
+        return render_template("not_found_t.html")
+    if request.method=='POST':
+        trek.name=request.form.get("tname")
+        trek.location = request.form.get("loc")
+        trek.difficulty = request.form.get("values")
+        trek.duration_days = request.form.get("duration")
+        trek.max_slots = request.form.get("max slots")
+        trek.start_date = datetime.strptime(
+            request.form.get("starttime"),
+            "%Y-%m-%d"
+        )
+
+        trek.end_date = datetime.strptime(
+            request.form.get("endtime"),
+            "%Y-%m-%d"
+        )
+
+        trek.status = request.form.get("status")
+        trek.description = request.form.get("message")
+        staff_ids = request.form.getlist("staff_ids")
+        staffs_assigned=Staff_profile.query.filter(Staff_profile.id.in_(staff_ids)).all()
+
+         #replace old staff assignments
+        trek.assigned_staffs=staffs_assigned
+        db.session.commit()
+        return redirect(url_for("manage_treks"))
+
+    return render_template("a_add_treks.html",trek=trek,staffs=staffs,user=user)
 
 @app.route("/admin/staff")
 def staff():
@@ -122,7 +168,7 @@ def staff():
     staff_pending = Staff_profile.query.filter_by(approval_status="pending").count()
     staff_approved = Staff_profile.query.filter_by(approval_status="approved").count()
     staff_blacklisted = Staff_profile.query.filter_by(approval_status="blacklisted").count()
-    return render_template("a_staff.html",staffs=staffs,staff_pending=staff_pending,staff_approved=staff_approved,staff_blacklisted=staff_blacklisted,user=user)
+    return render_template("a_staff.html",staffs=staffs,staff_pending=staff_pending,staff_approved=staff_approved,staff_blacklisted=staff_blacklisted,user=user,status=status)
 
 @app.route("/approve/<int:staff_id>")
 def approve(staff_id):
@@ -153,13 +199,16 @@ def profile(staff_id):
     staff=Staff_profile.query.get(staff_id)
     if not staff:
         return render_template("s_not_exists.html")
+    if staff and staff.profile_completed:
+        return render_template("staff_pending.html")
+
     if request.method=="POST":
         staff.contact_details = request.form.get("contact")
         staff.bio = request.form.get("bio")
         staff.expertise = request.form.get("expertise")
         staff.certifications = request.form.get("certifications")
         staff.years_experience = request.form.get("experience")
-
+        staff.profile_completed = True
         db.session.commit()
         # flash("Profile updated successfully!")
         return render_template("staff_pending.html")
