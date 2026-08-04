@@ -190,8 +190,30 @@ def reject(staff_id):
 
 
 @app.route("/admin/users")
-def users():
-    pass
+def manage_users():
+    users=User.query.filter(User.role!='admin').all()
+    user=User.query.filter_by(role="admin").first()
+    return render_template("a_users.html",users=users,user=user)
+
+@app.route("/user/blacklist/<int:user_id>")
+def blacklist_user(user_id):
+    user=User.query.get(user_id)
+    if not user:
+        return render_template("not_exist.html")
+    user.is_blacklisted=True
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+
+@app.route("/user/activate/<int:user_id>")
+def activate_user(user_id):
+    user=User.query.get(user_id)
+    if not user:
+        return render_template("not_exist.html")
+    user.is_blacklisted = False
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+
+    
 
 # --------------------handling staff routes----------------------#
 @app.route("/staff/<int:staff_id>/profile",methods=['POST','GET'])

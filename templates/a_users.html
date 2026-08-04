@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Users
+{% endblock%}
+
+{% block header_title %}
+Users
+{% endblock%}
+
+{% block head_css%}
+
+{% endblock%}
+
+{% block content %}
+
+<div class="table-content">
+
+  <table class="table">
+
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% for user in users %}
+
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.full_name if user.full_name else user.username }}</td>
+        <td>{{ user.username}}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>{{ user.role }}</td>
+        <td>{% if user.is_blacklisted %} Blacklisted {% else %} Active {% endif %}</td>
+
+        <td>
+          {% if user.is_blacklisted %}
+          <a href="/user/activate/{{ user.id }}" class="btn btn-success btn-sm">
+            Activate
+          </a>
+          {% else %}
+          <a href="/user/blacklist{{ user.id }}" class="btn btn-danger btn-sm">
+            Blacklist
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+{% endblock %}
