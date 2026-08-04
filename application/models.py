@@ -48,6 +48,7 @@ class Staff_profile(db.Model):
     is_available     = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime,default=db.func.now())
     updated_at = db.Column(db.DateTime,default=db.func.now())
+    profile_completed = db.Column(db.Boolean,default=False)
 
     #Relationships
     assigned_treks=db.relationship('Trek',secondary='trek_staff_assignment',lazy=True,back_populates='assigned_staffs')

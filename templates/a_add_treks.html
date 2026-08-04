@@ -16,139 +16,165 @@ Add/Edit Treks
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    background:white;
-    border-radius:12px;
-    padding:25px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-    
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+    position: relative;
+    padding-bottom: 80px;
+
   }
 
-  .left , .right{
-    flex:1;
+  .left,
+  .right {
+    flex: 1;
   }
-  .form-add-treks .left,.form-add-treks .right {
+
+  .form-add-treks .left,
+  .form-add-treks .right {
     height: 500px;
-    
+
   }
 
 
   .left .l {
     margin: 20px;
     padding: 10px;
-    margin-bottom:22px;
+    margin-bottom: 22px;
   }
 
   .right .r {
     margin: 20px;
     padding: 10px;
-    margin-bottom:22px;
+    margin-bottom: 22px;
   }
-  .r{
+
+  .r {
     display: flex;
-    align-items:center;
+    align-items: center;
     margin-bottom: 10px;
   }
-  .r label{
+
+  .r label {
     width: 150px;
     font-weight: 500;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
-  .l{
+
+  .l {
     display: flex;
-    align-items:center;
+    align-items: center;
     margin-bottom: 10px;
   }
-  .l label{
+
+  .l label {
     width: 150px;
     font-weight: 500;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
+
   .r input,
-  .r select{
+  .r select {
     flex: 1;
   }
+
   .l input,
-  .l select{
+  .l select {
     flex: 1;
   }
-  textarea{
+
+  textarea {
     width: 100%;
-    min-height:120px;
+    min-height: 120px;
+  }
+  .buttons{
+    position: absolute;
+    bottom: 20px;
+    right: 25px;
+
+    display: flex;
+    gap: 15px;
   }
 </style>
 {% endblock %}
 
 {% block header_title %}
+{% if trek %}
+Edit Trek
+{% else %}
 Add New Trek
+{% endif %}
+
 {% endblock %}
 
 {% block content %}
 
-<form action="/admin/add_treks" class="form-add-treks" method="post">
+<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks"
+method="POST">
   <div class="left">
     <div class="l">
       <label for="name">Trek Name</label>
-      <input type="text" id="name" name="tname" required>
+      <input type="text" id="name" name="tname" value="{{ trek.name if trek else '' }}">
     </div>
     <div class="l">
       <label for="loc">Location</label>
-      <input type="text" name="loc" id="loc">
+      <input type="text" name="loc" id="loc" value="{{ trek.location if trek else '' }}">
     </div>
     <div class="l">
       <label for="level">Difficulty</label>
       <select name="values" id="level">
-        <option value="easy">Easy</option>
-        <option value="moderate">Moderate</option>
-        <option value="hard">Hard</option>
+        <option value="">--Select Level--</option>
+        <option value="easy" {% if trek and trek.difficulty=='easy' %} selected {% endif %}>Easy</option>
+        <option value="moderate" {% if trek and trek.difficulty=='moderate' %} selected {% endif %}>Moderate</option>
+        <option value="hard" {% if trek and trek.difficulty=="hard" %} selected {% endif %}>Hard</option>
       </select>
     </div>
     <div class="l">
       <label for="duration">Duration(Days)</label>
-      <input type="number" id="duration" name="duration" value="days">
+      <input type="number" id="duration" name="duration" value="{{ trek.duration_days if trek else '' }}">
     </div>
     <div class="l">
       <label for="slots">Maximum Slots</label>
-      <input type="number" name="max slots" id="slots" value="no.ofslots">
+      <input type="number" name="max slots" id="slots" value="{{ trek.max_slots if trek else '' }}">
     </div>
   </div>
   <div class="right">
     <div class="r">
       <label for="date">Start Date</label>
-      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy">
+      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy" value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}">
     </div>
     <div class="r">
       <label for="endtime">End Date</label>
-      <input type="date" name="endtime" id="endtime" placeholder="dd/mm/yyyy">
+      <input type="date" name="endtime" id="endtime" placeholder="dd/mm/yyyy" value="{{ trek.end_date.strftime('%Y-%m-%d') if trek and trek.end_date else '' }}">
     </div>
     <div class="r">
       <label for="assign_staff">Assign Staff</label>
       <select name="staff_ids" id="assign_staff" multiple size="2" style="height: 120px; width: 100%;">
         {% for staff in staffs %}
-        <option value="{{staff.id}}">{{staff.user.username}} ({{ staff.expertise }})</option>
+        <option value="{{staff.id}}" {% if trek and staff in trek.assigned_staffs %} selected {% endif %}> {{staff.user.username}} ({{ staff.expertise }})</option>
         {% endfor %}
       </select>
     </div>
     <div class="r">
       <label for="status">Status</label>
       <select name="status" id="status">
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="open">Open</option>
-        <option value="closed">Closed</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
+        <option value="pending" {% if trek and trek.status=="pending" %} selected {% endif %}>Pending</option>
+        <option value="approved" {% if trek and trek.status=="approved" %} selected {% endif %}>Approved</option>
+        <option value="open" {% if trek and trek.status=="open" %} selected {% endif %}>Open</option>
+        <option value="closed" {% if trek and trek.status=="closed" %} selected {% endif %}>Closed</option>
+        <option value="completed" {% if trek and trek.status=="completed" %} selected {% endif %}>Completed</option>
+        <option value="cancelled" {% if trek and trek.status=="cancelled" %} selected {% endif %}>Cancelled</option>
       </select>
     </div>
     <div class="r">
       <label for="message">Description</label>
-      <textarea id="message" name="message" rows="4" ></textarea>
+      <textarea id="message" name="message" rows="4">{{ trek.description if trek else '' }}</textarea>
     </div>
   </div>
-  <div class="buttons"
-  style="gap: 15px; margin-top: 20px; align-self: flex-end; align-items:end;">
-  <a href="/admin/treks" class="btn btn-danger">Cancel</a>
-  <button type="submit" class="btn btn-success">Save</button>
-</div>
+  <div class="buttons" style="gap: 15px; margin-top: 20px; position: absolute; ">
+    <a href="/admin/treks" class="btn btn-danger">Cancel</a>
+    <button type="submit" class="btn btn-success">{% if trek %} Update Trek {% else %} Save Trek {% endif %}</button>
+  </div>
 </form>
 
 {% endblock %}

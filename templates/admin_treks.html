@@ -37,8 +37,8 @@ Treks
                     <td>{{trek.available_slots}}</td>
                     <td>{{trek.status}}</td>
                     <td>
-                        <a href="" class="btn btn-primary">Edit</a>
-                        <a href="" class="btn btn-danger">delete</a>
+                        <a href="/update/{{trek.id}}/trek" class="btn btn-primary">Edit</a>
+                        <a href="/delete/{{trek.id}}/trek" class="btn btn-danger">delete</a>
                     </td>
                 </tr>
                 {% endfor %}

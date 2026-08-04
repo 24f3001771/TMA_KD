@@ -23,7 +23,7 @@ Staff Requests
     background: white;
   }
 
-  .tab:active {
+  .tab.active {
     color: #0d6efd;
     font-weight: bold;
     border-bottom: 3px solid #0d6efd;
@@ -33,13 +33,13 @@ Staff Requests
 
 {% block content %}
 <div class="status">
-  <a href="admin/staff?status=pending" class="tab ">
+  <a href="/admin/staff?status=pending" class="tab {% if status=='pending'%} active {% endif %}">
     pending({{staff_pending}})
   </a>
-  <a href="admin/staff?status=approved" class="tab ">
+  <a href="/admin/staff?status=approved" class="tab {% if status=='approved' %}active{% endif %}">
     Approved ({{staff_approved}})
   </a>
-  <a href="admin/staff?status=blacklisted" class="tab ">
+  <a href="/admin/staff?status=blacklisted" class="tab {% if status=='blacklisted' %}active{% endif %}">
     Blacklisted ({{staff_blacklisted}})
   </a>
 </div>
@@ -70,12 +70,29 @@ Staff Requests
         <td>{{ staff.approval_status}}</td>
 
         <td>
-          <a href="/approve/{{staff.id}}" class="btn btn-success btn-sm">
+          {% if staff.approval_status == "pending" %}
+
+          <a href="/approve/{{ staff.id }}" class="btn btn-success btn-sm">
             Approve
           </a>
-          <a href="/reject/{{staff.id}}" class="btn btn-danger btn-sm">
+
+          <a href="/reject/{{ staff.id }}" class="btn btn-danger btn-sm">
             Reject
           </a>
+
+          {% elif staff.approval_status == "approved" %}
+
+          <a href="/reject/{{ staff.id }}" class="btn btn-danger btn-sm">
+            Reject
+          </a>
+
+          {% elif staff.approval_status == "blacklisted" %}
+
+          <a href="/approve/{{ staff.id }}" class="btn btn-success btn-sm">
+            Approve
+          </a>
+
+          {% endif %}
         </td>
       </tr>
 
