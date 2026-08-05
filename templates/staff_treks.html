@@ -5,53 +5,40 @@ Staff - Manage Trek
 {% endblock %}
 
 {% block header_title %}
-{{trek.name}}
+My treks
 {% endblock %}
 
-
 {% block content %}
-<div class="my-trek-info">
-    <div class="heading">
-        Trek Information
+<div class="main-bottom">
+  <section class="table-section">
+    <div class="table-content">
+      <table class="table table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Trek Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Participants</th>
+            <th scope="col">Slots</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-hover">
+          {% for trek in treks %}
+          <tr>
+            <th scope="row">{{trek.name}}</th>
+            <td>{{ trek.location}}</td>
+            <td>{{ trek.bookings | length }}</td>
+            <td>{{ trek.max_slots }}</td>
+            <td>{{trek.status}}</td>
+            <td>
+              <a href="{{ url_for('manage_trek', staff_id=staff.id,trek_id=trek.id) }}" class="btn btn-outline-primary">Manage</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <div class="trek-info">
-
-    </div>
-    <div>
-        <h3>Participants({{count}})</h3>
-    </div>
-    <section class="table-section">
-        <div class="table-content">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">User Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Booking Date</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="table-hover">
-                    {%for trek in treks %}
-                    <tr>
-                        <th scope="row">{{user.name}}</th>
-                        <td>{{trek.location}}</td>
-                        <td>{{trek.difficulty}}</td>
-                        <td>{{trek.available_slots}}</td>
-                        <td>{{trek.status}}</td>
-                        <td>
-                            <button type="button" class="btn btn-outline-primary btn-lg">Primary</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-    <div class="two-buttons">
-        <button type="button" class="btn btn-outline-primary btn-lg">Mark as Started</button>
-        <button type="button" class="btn btn-outline-success btn-lg">Mark as Completed</button>
-    </div>
-
+  </section>
 </div>
 {% endblock %}

@@ -1,0 +1,115 @@
+{% extends "staff_base.html" %}
+
+{% block title %}
+Edit Profile
+{% endblock %}
+
+{% block header_title %}
+Edit Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow p-4">
+
+    <h3>Edit Profile</h3>
+    <hr>
+
+    <form method="POST">
+
+        <!-- Username -->
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input
+                type="text"
+                class="form-control"
+                value="{{ user.username }}"
+                readonly>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input
+                type="email"
+                class="form-control"
+                name="email"
+                value="{{ user.email }}">
+        </div>
+
+        <!-- Contact -->
+        <div class="mb-3">
+            <label class="form-label">Contact Details</label>
+            <input
+                type="text"
+                class="form-control"
+                name="contact_details"
+                value="{{ staff.contact_details or '' }}">
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-3">
+            <label class="form-label">Bio</label>
+
+            <textarea
+                class="form-control"
+                rows="4"
+                name="bio">{{ staff.bio or '' }}</textarea>
+        </div>
+
+        <!-- Expertise -->
+        <div class="mb-3">
+            <label class="form-label">Expertise</label>
+            <input
+                type="text"
+                class="form-control"
+                name="expertise"
+                value="{{ staff.expertise or '' }}">
+        </div>
+
+        <!-- Certifications -->
+        <div class="mb-3">
+            <label class="form-label">Certifications</label>
+
+            <textarea
+                class="form-control"
+                rows="3"
+                name="certifications">{{ staff.certifications or '' }}</textarea>
+        </div>
+
+        <!-- Experience -->
+        <div class="mb-3">
+            <label class="form-label">Years of Experience</label>
+
+            <input
+                type="number"
+                class="form-control"
+                name="years_experience"
+                value="{{ staff.years_experience or '' }}">
+        </div>
+
+        <!-- Approval Status -->
+        <div class="mb-4">
+            <label class="form-label">Approval Status</label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="{{ staff.approval_status.title() }}"
+                readonly>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Save Changes
+        </button>
+
+        <a href="{{ url_for('staff_profile',staff_id=staff.id) }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

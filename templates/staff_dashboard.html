@@ -4,6 +4,21 @@
 Staff Dashboard
 {% endblock %}
 
+{% block head_css %}
+<style>
+    a {
+        text-decoration: none;
+        color: #9799ab;
+
+    }
+
+    .text-most-important {
+        color: #363434;
+        font-weight: bolder;
+    }
+</style>
+{% endblock %}
+
 {% block header_title %}
 My Dashboard
 {% endblock %}
@@ -15,7 +30,7 @@ My Dashboard
       <p class="text-most-important">Assigned Treks</p>
       <span class="material-icons-outlined text-blue ">landscape</span>
     </div>
-    <span class="text-most-important font-weight-bold">{{treks_count}}</span>
+    <span class="text-most-important font-weight-bold">{{ treks_count }}</span>
   </div>
 
   <div class="card">
@@ -23,7 +38,7 @@ My Dashboard
       <p class="text-most-important">Total Participants</p>
       <span class="material-icons-outlined text-orange">person</span>
     </div>
-    <span class="text-most-important font-weight-bold">{{user_count}}</span>
+    <span class="text-most-important font-weight-bold">{{ participants_count }}</span>
   </div>
 
   <div class="card">
@@ -31,7 +46,7 @@ My Dashboard
       <p class="text-most-important">Open Treks</p>
       <span class="material-icons-outlined text-blue ">landscape</span>
     </div>
-    <span class="text-most-important font-weight-bold">{{staff_count}}</span>
+    <span class="text-most-important font-weight-bold">{{ open_treks_count }}</span>
   </div>
 </div>
 
@@ -53,15 +68,15 @@ My Dashboard
           </tr>
         </thead>
         <tbody class="table-hover">
-          {%for trek in treks %}
+          {% for trek in treks %}
           <tr>
             <th scope="row">{{trek.name}}</th>
-            <td>{{trek.location}}</td>
-            <td>{{trek.difficulty}}</td>
-            <td>{{trek.available_slots}}</td>
+            <td>{{ trek.location}}</td>
+            <td>{{ trek.bookings | length }}</td>
+            <td>{{ trek.max_slots }}</td>
             <td>{{trek.status}}</td>
             <td>
-              <button type="button" class="btn btn-outline-primary btn-lg">Primary</button>
+              <a href="{{ url_for('manage_trek',staff_id=staff.id, trek_id=trek.id) }}" class="btn btn-outline-primary">Manage</a>
             </td>
           </tr>
           {% endfor %}

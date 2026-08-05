@@ -109,7 +109,7 @@ Add New Trek
 
 {% block content %}
 
-<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks"
+<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks card p-4 mb-4"
 method="POST">
   <div class="left">
     <div class="l">

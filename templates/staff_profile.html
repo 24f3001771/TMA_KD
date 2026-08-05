@@ -1,0 +1,38 @@
+{% extends "staff_base.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block header_title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+<div class="card p-4 mb-4">
+    <h3 class="text-center">Personal Information</h3>
+    <hr>
+    <p><strong>Name:</strong> {{user.full_name}}</p>
+    <p><strong>Username:</strong> {{user.username}}</p>
+    <p><strong>Email:</strong> {{user.email}}</p>
+    <p><strong>Phone:</strong> {{staff.contact_details}}</p>
+    <br>
+    <hr>
+    <h3 class="text-center">Professional Information</h3>
+    <hr>
+    <p><strong>Experience:</strong> {{staff.years_experience}}</p>
+    <p><strong>Qualification:</strong> {{staff.certifications}}</p>
+    <p><strong>Status:</strong> {{staff.approval_status}}</p>
+    <br>
+    <hr>
+    <h3 class="text-center">Statistics</h3>
+    <hr>
+    <p><strong>Assigned Treks:</strong> {{staff.assigned_treks}}</p>
+    <p><strong>Completed:</strong> {{staff.certifications}}</p>
+    <p><strong>Participants:</strong> {{staff.approval_status}}</p>
+    <div class="button" style="margin: 20px; display: flex; justify-content: center; align-items: end;">
+        <a href="{{ url_for('edit_staff_profile',staff_id=staff.id) }}" class="btn btn-outline-dark btn-lg">Edit</a>
+    </div>
+
+</div>
+{% endblock %}

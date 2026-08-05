@@ -75,11 +75,6 @@ def admin():
     bookings_count=Booking.query.count()
     return render_template("admin_dashboard.html",user=user,recent_bookings=recent_bookings,treks_count=treks_count,user_count=user_count,staff_count=staff_count,bookings_count=bookings_count)
 
-@app.route("/admin/bookings")
-def bookings():
-    bookings=Booking.query.all()
-    user=User.query.filter_by(role="admin").first()
-    return render_template("a_bookings.html",bookings=bookings,user=user)
 
 @app.route("/admin/treks")
 def manage_treks():
@@ -213,7 +208,11 @@ def activate_user(user_id):
     db.session.commit()
     return redirect(url_for("manage_users"))
 
-    
+@app.route("/admin/bookings")
+def bookings():
+    user=User.query.filter_by(role="admin").first()
+    bookings=Booking.query.order_by(Booking.booking_date.desc()).all()
+    return render_template("a_bookings.html",bookings=bookings,user=user)
 
 # --------------------handling staff routes----------------------#
 @app.route("/staff/<int:staff_id>/profile",methods=['POST','GET'])
@@ -236,11 +235,113 @@ def profile(staff_id):
         return render_template("staff_pending.html")
     return render_template("staff_pending_form.html",staff=staff)
 
-
+#---------------------------------now staff dashboard--------------------------------
 @app.route("/staff/<int:staff_id>/dashboard")
 def staff_home(staff_id):
-    pass
+    staff=Staff_profile.query.get(staff_id)
+    if not staff:
+        return render_template("s_not_exists.html")
+    user=staff.user
+    treks=staff.assigned_treks
+    treks_count=len(treks)
+    participants=0
+    for trek in treks:
+        participants+= len(trek.bookings)
 
+    open_treks=0
+    for trek in treks:
+        if trek.status=='open':
+            open_treks+=1
+
+    return render_template("staff_dashboard.html",user=user,treks=treks,treks_count=treks_count,participants_count=participants,open_treks_count=open_treks,staff=staff)
+
+@app.route("/staff/treks/<int:staff_id>")
+def staff_treks(staff_id):
+    staff=Staff_profile.query.get_or_404(staff_id)
+    if not staff:
+        return render_template("s_not_exists.html")
+    user=staff.user
+    treks=staff.assigned_treks
+    return render_template("staff_treks.html",user=user,treks=treks,staff=staff)
+
+
+@app.route("/staff/<int:staff_id>/trek/<int:trek_id>")
+def manage_trek(staff_id, trek_id):
+    staff=Staff_profile.query.get_or_404(staff_id)
+    user=staff.user
+    trek=Trek.query.get_or_404(trek_id)
+    if not trek:
+        return render_template("t_not_found.html")
+    bookings=Booking.query.filter_by(trek_id=trek.id).all()
+    total_participants=0
+    for booking in bookings:
+        total_participants+=booking.num_participants
+
+    return render_template("s_manage_trek.html",user=user,trek=trek,bookings=bookings,total_participants=total_participants,staff=staff)
+
+@app.route("/staff/trek/<int:trek_id>/start")
+def start_trek(trek_id):
+    trek=Trek.query.get_or_404(trek_id)
+    trek.status='open'
+    db.session.commit()
+    return redirect(url_for("manage_trek", trek_id=trek.id))
+
+@app.route("/staff/trek/<int:trek_id>/complete")
+def complete_trek(trek_id):
+    trek = Trek.query.get_or_404(trek_id)
+    trek.status = "completed"
+    for booking in trek.bookings:
+        booking.booking_status = "completed"
+    db.session.commit()
+    return redirect(url_for("manage_trek", trek_id=trek.id))
+
+@app.route("/staff/profile/<int:staff_id>")
+def staff_profile(staff_id):
+    staff=Staff_profile.query.get_or_404(staff_id)
+    user=staff.user
+    return render_template("staff_profile.html",user=user,staff=staff)
+
+@app.route("/staff/<int:staff_id>/profile/edit", methods=["GET", "POST"])
+def edit_staff_profile(staff_id):
+
+    staff = Staff_profile.query.get_or_404(staff_id)
+    user = staff.user
+
+    if request.method == "POST":
+        user.email = request.form.get("email")
+        staff.contact_details = request.form.get("contact_details")
+        staff.bio = request.form.get("bio")
+        staff.expertise = request.form.get("expertise")
+        staff.certifications = request.form.get("certifications")
+
+        years = request.form.get("years_experience")
+        if years:
+            staff.years_experience = int(years)
+        else:
+            staff.years_experience = None
+
+        # Check whether the profile is complete
+        if (
+            staff.contact_details and
+            staff.bio and
+            staff.expertise and
+            staff.certifications and
+            staff.years_experience
+        ):
+            staff.profile_completed = True
+
+
+        db.session.commit()
+
+        return redirect(
+            url_for("staff_profile", staff_id=staff.id)
+        )
+
+    return render_template(
+        "edit_staff_profile.html",
+        staff=staff,
+        user=user
+    )
 
 
 @app.route("/home/dashboard")

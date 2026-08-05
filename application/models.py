@@ -4,7 +4,7 @@ from sqlalchemy import Enum
 #assosiation or junction table (relationship table between staff and trek (many-to-many))
 trek_staff_assignment = db.Table("trek_staff_assignment",
     db.Column('trek_id', db.Integer , db.ForeignKey('trek.id'),primary_key=True),
-    db.Column('staff_id', db.Integer , db.ForeignKey('staff_profile.id',primary_key=True)),
+    db.Column('staff_id', db.Integer , db.ForeignKey('staff_profile.id'),primary_key=True),
     db.Column('assigned_at',db.DateTime, default=db.func.now()),
     db.Column('role_on_trek',db.String(),nullable=True)
     )
