@@ -78,8 +78,8 @@ Admin Dashboard
                 <tr>
                     <th scope="row">{{booking.id}}</th>
                     <td>{{booking.user.username}}</td>
-                    <td>{{booking.trek}}</td>
-                    <td>{{booking.booking_date}}</td>
+                    <td>{{booking.trek.name}}</td>
+                    <td>{{booking.booking_date.strftime("%Y-%m-%d")}}</td>
                     <td>{{booking.booking_status}}</td>
                 </tr>
                 {% endfor %}

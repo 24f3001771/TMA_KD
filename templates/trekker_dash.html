@@ -5,7 +5,7 @@ User(Trekker) Dashboard
 {% endblock %}
 
 {% block header_title %}
-Welcome {{user.username}}!
+<h2>Welcome, {{ user.username }}!</h2>
 {% endblock %}
 
 {% block head_css %}
@@ -13,6 +13,7 @@ Welcome {{user.username}}!
     .filter-section {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
         gap: 40px;
         margin-bottom: 25px;
     }
@@ -27,22 +28,23 @@ Welcome {{user.username}}!
 {% block content %}
 <div class="filter-section">
     <h3>Available Treks</h3>
-    <div class="buttons" style="display: flex;">
-        <form action="/home/{{user.id}}" method="get">
-            <select name="difficulty" class="form-select">
-                <option value="">All Difficulties</option>
-                <option value="Easy">Easy</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Hard">Hard</option>
-            </select>
-            <select name="locations" class="form-select">
-                <option value="">All Locations</option>
-                <option value="Nepal">Nepal</option>
-                <option value="Uttarakhand">Uttarakhand</option>
-                <option value="Himachal">Himachal</option>
-            </select>
-        </form>
-    </div>
+    <form method="GET" style="display: flex; gap: 10px;">
+        <select name="difficulty" class="form-select">
+            <option value="">All Difficulties</option>
+            <option value="easy" {% if selected_difficulty == "easy" %} selected {% endif %}>Easy</option>
+            <option value="moderate" {% if selected_difficulty == "moderate" %} selected {% endif %}>Moderate</option>
+            <option value="hard" {% if selected_difficulty == "hard" %} selected {% endif %}>Hard</option>
+        </select>
+        <select name="location" class="form-select">
+            <option value="">All Locations</option>
+            <option value="Nepal">Nepal</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="Himachal">Himachal</option>
+        </select>
+        <button type="submit" class="btn btn-primary">
+        Filter
+        </button>
+    </form>
 
 </div>
 <section class="table-section">
@@ -53,21 +55,23 @@ Welcome {{user.username}}!
                     <th scope="col">Trek Name</th>
                     <th scope="col">Location</th>
                     <th scope="col">Difficulty</th>
-                    <th scope="col">Duration</th>
+                    <th scope="col">Days</th>
                     <th scope="col">Available Slots</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-hover">
-                {%for trek in treks %}
+                {% for trek in treks %}
                 <tr>
-                    <th scope="row">{{trek.name}}</th>
-                    <td>{{trek.location}}</td>
-                    <td>{{trek.difficulty}}</td>
-                    <td>{{trek.available_slots}}</td>
-                    <td>{{trek.status}}</td>
+                    <th scope="row">{{ trek.name }}</th>
+                    <td>{{ trek.location }}</td>
+                    <td>{{ trek.difficulty }}</td>
+                    <td>{{ trek.duration_days }}</td>
+                    <td>{{ trek.available_slots }}</td>
+                    <td>{{ trek.status }}</td>
                     <td>
-                        <a href="/book/{{ trek.id }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url_for('trek_details',user_id=user.id, trek_id=trek.id) }}" class="btn btn-primary btn-sm">
                             Book Now
                         </a>
                     </td>
@@ -92,13 +96,13 @@ Welcome {{user.username}}!
                 </tr>
             </thead>
             <tbody class="table-hover">
-                {%for trek in treks %}
+                {% for booking in bookings %}
                 <tr>
-                    <th scope="row">{{trek.name}}</th>
-                    <td>{{trek.}}</td>
-                    <td>{{trek.}}</td>
+                    <td>{{ booking.trek.name }}</td>
+                    <td>{{ booking.booking_date.strftime("%d %b %Y") }}</td>
+                    <td>{{ booking.booking_status.title() }}</td>
                     <td>
-                        <a href="/booking/{{ booking.id }}" class="btn btn-outline-primary btn-sm">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
                             View Details
                         </a>
                     </td>

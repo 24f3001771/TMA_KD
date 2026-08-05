@@ -1,0 +1,112 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+User-Trek Details & Booking
+{% endblock %}
+
+{% block head_css %}
+<style>
+
+.trek-card{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.trek-info{
+    display:flex;
+    gap:50px;
+    margin-bottom:30px;
+}
+
+.trek-image{
+    width:320px;
+}
+
+.trek-image img{
+    width:100%;
+    border-radius:10px;
+}
+
+.trek-details{
+    flex:1;
+}
+
+.trek-details p{
+    margin-bottom:15px;
+}
+
+.book-button{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.back-link{
+    margin-bottom:20px;
+}
+</style>
+{% endblock %}
+
+{% block header_title %}
+<h1>{{ trek.name }}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="back-link">
+    <a href="{{ url_for('user_dashboard', user_id=user.id) }}">
+        ← Back to Treks
+    </a>
+</div>
+
+<div class="trek-card">
+
+    <div class="trek-info">
+
+        <div class="trek-image">
+
+            <img src="{{ url_for('static', filename='images/mountain.jpg') }}" alt="Trek Image">
+
+        </div>
+
+        <div class="trek-details">
+
+            <h2>{{ trek.name }}</h2>
+
+            <p><strong>Location :</strong> {{ trek.location }}</p>
+
+            <p><strong>Difficulty :</strong> {{ trek.difficulty.title() }}</p>
+
+            <p><strong>Duration :</strong> {{ trek.duration_days }} Days</p>
+
+            <p><strong>Start Date :</strong>
+                {{ trek.start_date.strftime("%d %b %Y") }}
+            </p>
+
+            <p><strong>End Date :</strong>
+                {{ trek.end_date.strftime("%d %b %Y") }}
+            </p>
+
+            <p><strong>Available Slots :</strong>
+                {{ trek.available_slots }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4>Description</h4>
+
+    <p>{{ trek.description }}</p>
+
+    <form action="{{ url_for('book_trek', user_id=user.id, trek_id=trek.id) }}" method="POST">
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Book Now
+        </button>
+
+    </form>
+</div>
+{% endblock %}

@@ -343,15 +343,84 @@ def edit_staff_profile(staff_id):
         user=user
     )
 
+# -------------------------------------------trekker dashboard--------------------------------------------------#
+@app.route("/home/<int:user_id>/dashboard")
+def user_dashboard(user_id):
+    user=User.query.get_or_404(user_id)
+    difficulty=request.args.get("difficulty")
+    location=request.args.get("location")
+    # only open treks should be visible
+    treks=Trek.query.filter_by(status='open')
+    if difficulty:
+        treks=Trek.query.filter_by(difficulty=difficulty)
+    if location:
+        treks = treks.filter_by(location=location)
+    treks=treks.all()
+    bookings=Booking.query.filter_by(user_id=user.id).all()
+    # Right now, after filtering, the dropdown will reset to "All Difficulties" and "All Locations", even though the table is filtered.To keep the selected option visible
+    return render_template("trekker_dash.html",treks=treks,user=user,bookings=bookings,selected_difficulty=difficulty,selected_location=location)
 
-@app.route("/home/dashboard")
-def home():
-    pass
+@app.route("/home/<int:user_id>/book/<int:trek_id>", methods=["POST"])
+def book_trek(user_id, trek_id):
 
-@app.route("/book/<int:trek_id>")
-def book_trek(trek_id):
-    pass
+    user = User.query.get_or_404(user_id)
+    trek = Trek.query.get_or_404(trek_id)
 
+    if trek.status != "open":
+        return "Trek is not open."
+    if trek.available_slots <= 0:
+        return "No slots available."
+    existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first()
+    if existing_booking:
+        return "You have already booked this trek."
+    booking = Booking(user_id=user.id,trek_id=trek.id)
+    trek.available_slots -= 1
+    db.session.add(booking)
+    db.session.commit()
+    return redirect(url_for("user_dashboard", user_id=user.id))
+    bookings = Booking.query.filter_by(user_id=user.id).all()
+
+@app.route("/home/<int:user_id>/trek/<int:trek_id>")
+def trek_details(user_id, trek_id):
+
+    user = User.query.get_or_404(user_id)
+    trek = Trek.query.get_or_404(trek_id)
+
+    return render_template(
+        "trek_details.html",
+        user=user,
+        trek=trek
+    )
+
+@app.route("/home/<int:user_id>/profile")
+def trekker_profile(user_id):
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template(
+        "trekker_profile.html",
+        user=user
+    )
+
+@app.route("/home/<int:user_id>/profile/edit", methods=["GET","POST"])
+def edit_trekker_profile(user_id):
+
+    user = User.query.get_or_404(user_id)
+
+    if request.method=="POST":
+
+        user.full_name=request.form.get("full_name")
+        user.email=request.form.get("email")
+        user.phone=request.form.get("phone")
+        
+        db.session.commit()
+
+        return redirect(url_for("trekker_profile",user_id=user.id))
+
+    return render_template(
+        "edit_trekker_profile.html",
+        user=user
+    )
 # trek.available_slots -= booking.num_participants
 # trek.available_slots += booking.num_participants
 

@@ -64,10 +64,10 @@
             </div>
             <ul class="sidebar-list">
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">dashboard</span> <a href="/admin">Dashboard</a>
+                    <span class="material-icons-outlined">dashboard</span> <a href="{{ url_for('user_dashboard',user_id=user.id)}}">Dashboard</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">hiking</span> <a href="/treks">Browse Treks</a>
+                    <span class="material-icons-outlined">hiking</span> <a href="">Browse Treks</a>
                 </li>
                 <li class="sidebar-list-item">
                     <span class="material-icons-outlined">person</span> <a href="">Profile</a>
