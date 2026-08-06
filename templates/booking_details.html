@@ -1,0 +1,199 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+Booking Details
+{% endblock %}
+
+{% block header_title %}
+Booking Details
+{% endblock %}
+
+{% block header_css %}
+<style>
+    .info-grid {
+
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin-top: 20px;
+
+    }
+
+    .info-item {
+
+        font-size: 18px;
+
+    }
+
+    .info-item strong {
+
+        color: #222;
+
+    }
+
+    .two-buttons {
+
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 20px;
+
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="main-bottom">
+
+    <div class="heading-title">
+        <h2>{{ booking.trek.name }}</h2>
+    </div>
+
+    <!-- Trek Information -->
+
+    <section class="dashboard-card">
+
+        <h3>Trek Information</h3>
+
+        <hr>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>Location :</strong>
+                {{ booking.trek.location }}
+            </div>
+
+            <div class="info-item">
+                <strong>Difficulty :</strong>
+                {{ booking.trek.difficulty.title() }}
+            </div>
+
+            <div class="info-item">
+                <strong>Duration :</strong>
+                {{ booking.trek.duration_days }} Days
+            </div>
+
+            <div class="info-item">
+                <strong>Start Date :</strong>
+                {{ booking.trek.start_date.strftime("%d %b %Y") }}
+            </div>
+
+            <div class="info-item">
+                <strong>End Date :</strong>
+                {{ booking.trek.end_date.strftime("%d %b %Y") }}
+            </div>
+
+            <div class="info-item">
+                <strong>Available Slots :</strong>
+                {{ booking.trek.available_slots }}
+            </div>
+
+            <div class="info-item">
+                <strong>Status :</strong>
+                {{ booking.trek.status.title() }}
+            </div>
+
+        </div>
+        <section class="dashboard-card">
+
+            <h3>Description</h3>
+
+            <hr>
+
+            <p>{{ booking.trek.description }}</p>
+
+        </section>
+    </section>
+
+    <br>
+
+    <!-- Booking Information -->
+
+    <section class="dashboard-card">
+
+        <h3>Booking Information</h3>
+
+        <hr>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>Booking ID :</strong>
+                {{ booking.id }}
+            </div>
+
+            <div class="info-item">
+                <strong>Booking Date :</strong>
+                {{ booking.booking_date.strftime("%d %b %Y") }}
+            </div>
+
+            <div class="info-item">
+                <strong>Participants :</strong>
+                {{ booking.num_participants }}
+            </div>
+
+            <div class="info-item">
+                <strong>Booking Status :</strong>
+                {{ booking.booking_status.title() }}
+            </div>
+
+            <div class="info-item">
+                <strong>Payment Status :</strong>
+                {{ booking.payment_status.title() }}
+            </div>
+
+            <div class="info-item">
+                <strong>Total Amount :</strong>
+                ₹ {{ booking.total_amount }}
+            </div>
+
+            <div class="info-item">
+                <strong>Amount Paid :</strong>
+                ₹ {{ booking.amount_paid }}
+            </div>
+
+            <div class="info-item">
+                <strong>Notes :</strong>
+
+                {% if booking.notes %}
+                {{ booking.notes }}
+                {% else %}
+                -
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <br>
+
+    <!-- Buttons -->
+
+    <div class="two-buttons">
+
+        <a href="{{ url_for('user_dashboard', user_id=user.id) }}" class="btn btn-outline-secondary btn-lg">
+
+            Back
+
+        </a>
+
+        {% if booking.booking_status == "booked" %}
+
+        <a href="{{ url_for('cancel_booking',user_id=user.id,booking_id=booking.id) }}" class="btn btn-outline-danger btn-lg">
+
+            Cancel Booking
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

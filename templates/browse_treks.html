@@ -1,0 +1,189 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+Browse Treks
+{% endblock %}
+
+{% block header_title %}
+Browse Treks
+{% endblock %}
+
+{% block header_css %}
+<style>
+    .filter-card {
+
+        background: white;
+
+        padding: 20px;
+
+        border-radius: 10px;
+
+        margin-bottom: 20px;
+
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+
+    }
+
+    .filter-row {
+
+        display: flex;
+
+        gap: 20px;
+
+        align-items: center;
+
+    }
+
+    .filter-row input {
+
+        width: 350px;
+
+    }
+
+    .filter-row select {
+
+        width: 220px;
+
+    }
+</style>
+{% endblock%}
+
+{% block content %}
+
+<div class="filter-card">
+
+    <form method="GET">
+
+        <input type="hidden" name="user_id" value="{{user.id}}">
+
+        <div class="filter-row">
+
+            <input type="text" name="search" class="form-control" placeholder="Search Trek..." value="{{search or ''}}">
+
+            <select name="difficulty" class="form-select">
+
+                <option value="">All Difficulties</option>
+
+                <option value="easy" {% if selected_difficulty=="easy" %}selected{% endif %}>
+                    Easy
+                </option>
+
+                <option value="moderate" {% if selected_difficulty=="moderate" %}selected{% endif %}>
+                    Moderate
+                </option>
+
+                <option value="hard" {% if selected_difficulty=="hard" %}selected{% endif %}>
+                    Hard
+                </option>
+
+            </select>
+
+            <select name="location" class="form-select">
+
+                <option value="">All Locations</option>
+
+                {% for location in locations %}
+
+                <option value="{{location[0]}}" {% if selected_location==location[0] %}selected{% endif %}>
+
+                    {{location[0]}}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button class="btn btn-primary">
+
+                Filter
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<section class="table-section">
+
+    <div class="table-content">
+
+        <table class="table table-dark table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Trek Name</th>
+
+                    <th>Location</th>
+
+                    <th>Difficulty</th>
+
+                    <th>Duration</th>
+
+                    <th>Available Slots</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for trek in treks %}
+
+                <tr>
+
+                    <td>{{trek.name}}</td>
+
+                    <td>{{trek.location}}</td>
+
+                    <td>{{trek.difficulty.title()}}</td>
+
+                    <td>{{trek.duration}} Days</td>
+
+                    <td>{{trek.available_slots}}</td>
+
+                    <td>{{trek.status.title()}}</td>
+
+                    <td>
+
+                        <a href="{{url_for('trek_details',
+user_id=user.id,
+trek_id=trek.id)}}" class="btn btn-primary btn-sm">
+
+                            View Details
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% if not treks %}
+
+        <div class="alert alert-info">
+
+            No treks found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

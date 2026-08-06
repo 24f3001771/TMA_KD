@@ -1,5 +1,44 @@
 {% extends "trekker_base.html" %}
 
 {% block title %}
-User(Trekker) Dashboard
+User(Trekker) -My Bookings
+{% endblock %}
+
+
+{% block header_title %}
+<h3>My Bookings</h3>
+{% endblock %}
+
+{% block content %}
+<section class="table-section">
+    <div class="table-content">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Trek Name</th>
+                    <th scope="col">Booking Date</th>
+                    <th scope="col">Trek Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-hover">
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.trek.name }}</td>
+                    <td>{{ booking.booking_date.strftime("%d %b %Y") }}</td>
+                    <td>{{ booking.trek.start_date.strftime("%d %b %Y") }} to {{ booking.trek.end_date.strftime("%d %b
+                        %Y") }}</td>
+                    <td>{{ booking.booking_status.title() }}</td>
+                    <td>
+                        <a href="{{ url_for('booking_details',user_id=user.id,booking_id=booking.id) }}" class="btn btn-outline-primary btn-sm">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

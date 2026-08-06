@@ -2,7 +2,7 @@
 from flask import Flask, render_template, redirect, url_for, request,flash
 # #from app import app---> circular import error
 from flask import current_app as app
-from datetime import datetime
+from datetime import datetime,UTC
 #as i will have all my routes and i will need tables for crud operations so i will require model.py here
 from .models import *
 
@@ -412,7 +412,7 @@ def edit_trekker_profile(user_id):
         user.full_name=request.form.get("full_name")
         user.email=request.form.get("email")
         user.phone=request.form.get("phone")
-        
+
         db.session.commit()
 
         return redirect(url_for("trekker_profile",user_id=user.id))
@@ -421,6 +421,103 @@ def edit_trekker_profile(user_id):
         "edit_trekker_profile.html",
         user=user
     )
+
+
+@app.route("/home/<int:user_id>/bookings")
+def my_bookings(user_id):
+    user=User.query.get_or_404(user_id)
+    bookings=Booking.query.filter_by(user_id=user.id).order_by(Booking.booking_date.desc()).all()
+    return render_template("trekker_bookings.html",user=user,bookings=bookings)
+
+@app.route("/home/<int:user_id>/booking/<int:booking_id>")
+def booking_details(user_id, booking_id):
+
+    user = User.query.get_or_404(user_id)
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    if booking.user_id != user.id:
+        return render_template("not_authorized.html")
+
+    return render_template(
+        "booking_details.html",
+        user=user,
+        booking=booking
+    )
+
+@app.route("/home/<int:user_id>/booking/<int:booking_id>/cancel")
+def cancel_booking(user_id, booking_id):
+    user = User.query.get_or_404(user_id)
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.user_id != user.id:
+        return render_template("not_authorized.html")
+    
+    if booking.booking_status != "booked":
+        return redirect(url_for(
+            "booking_details",
+            user_id=user.id,
+            booking_id=booking.id
+        ))
+    booking.booking_status = "cancelled"
+    booking.cancelled_at = datetime.now()
+    booking.cancellation_reason = "Cancelled by user"
+    booking.trek.available_slots += booking.num_participants
+    db.session.commit()
+    return redirect(url_for(
+        "my_bookings",
+        user_id=user.id
+    ))
+
+@app.route("/home/<int:user_id>/history")
+def trek_history(user_id):
+    user = User.query.get_or_404(user_id)
+    bookings = Booking.query.filter_by(user_id=user.id,booking_status="completed").order_by(Booking.booking_date.desc()).all()
+
+    return render_template(
+        "trekker_history.html",
+        user=user,
+        bookings=bookings
+    )
+
+@app.route("/home/<int:user_id>/browse")
+def browse_treks(user_id):
+
+    user = User.query.get_or_404(user_id)
+
+    difficulty = request.args.get("difficulty")
+    location = request.args.get("location")
+    search = request.args.get("search")
+
+    treks = Trek.query.filter(Trek.status == "open")
+
+    if search:
+        treks = treks.filter(Trek.name.ilike(f"%{search}%"))
+
+    if difficulty:
+        treks = treks.filter(Trek.difficulty == difficulty)
+
+    if location:
+        treks = treks.filter(Trek.location == location)
+
+    treks = treks.order_by(Trek.start_date).all()
+
+    locations = (
+        db.session.query(Trek.location)
+        .distinct()
+        .order_by(Trek.location)
+        .all()
+    )
+
+    return render_template(
+        "browse_treks.html",
+        user=user,
+        treks=treks,
+        locations=locations,
+        selected_location=location,
+        selected_difficulty=difficulty,
+        search=search
+    )
+
 # trek.available_slots -= booking.num_participants
 # trek.available_slots += booking.num_participants
 

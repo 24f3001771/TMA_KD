@@ -67,16 +67,16 @@
                     <span class="material-icons-outlined">dashboard</span> <a href="{{ url_for('user_dashboard',user_id=user.id)}}">Dashboard</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">hiking</span> <a href="">Browse Treks</a>
+                    <span class="material-icons-outlined">hiking</span> <a href="{{ url_for('browse_treks',user_id=user.id) }}">Browse Treks</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">person</span> <a href="">Profile</a>
+                    <span class="material-icons-outlined">person</span> <a href="{{ url_for('trekker_profile',user_id=user.id) }}">Profile</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">event_available</span> <a href=""> My Bookings</a>
+                    <span class="material-icons-outlined">event_available</span> <a href="{{ url_for('my_bookings',user_id=user.id) }}"> My Bookings</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-symbols-outlined">history</span> <a href="">History</a>
+                   <span class="material-icons-outlined">event</span>  <a href="{{ url_for('trek_history', user_id=user.id) }}">History</a>
                 </li>
                 <li class="sidebar-list-item">
                     <span class="material-icons-outlined">logout</span><a href="/login">Logout</a>

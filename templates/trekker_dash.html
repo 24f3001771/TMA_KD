@@ -102,7 +102,7 @@ User(Trekker) Dashboard
                     <td>{{ booking.booking_date.strftime("%d %b %Y") }}</td>
                     <td>{{ booking.booking_status.title() }}</td>
                     <td>
-                        <a href="#" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ url_for('booking_details',user_id=user.id,booking_id=booking.id) }}" class="btn btn-outline-primary btn-sm">
                             View Details
                         </a>
                     </td>

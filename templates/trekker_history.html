@@ -1,0 +1,84 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+Trek History
+{% endblock %}
+
+{% block header_title %}
+Trekking History
+{% endblock %}
+
+{% block content %}
+
+<div class="main-bottom">
+
+    <div class="heading-title">
+        <h3>Trekking History</h3>
+    </div>
+
+    <section class="table-section">
+
+        <div class="table-content">
+
+            <table class="table table-dark table-hover">
+
+                <thead>
+
+                    <tr>
+                        <th>Trek Name</th>
+                        <th>Trek Dates</th>
+                        <th>Completed On</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for booking in bookings %}
+
+                    <tr>
+
+                        <td>{{ booking.trek.name }}</td>
+
+                        <td>
+                            {{ booking.trek.start_date.strftime("%d %b %Y") }}
+                            -
+                            {{ booking.trek.end_date.strftime("%d %b %Y") }}
+                        </td>
+
+                        <td>
+                            {{ booking.trek.end_date.strftime("%d %b %Y") }}
+                        </td>
+
+                        <td>
+                            {{ booking.booking_status.title() }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No completed treks yet.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

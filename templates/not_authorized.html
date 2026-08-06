@@ -1,0 +1,26 @@
+{% extends "trekker_base.html" %}
+
+{% block title %}
+Not Authorized
+{% endblock %}
+
+{% block header_title %}
+Access Denied
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-danger mt-4">
+    <h3>403 - Access Denied</h3>
+
+    <p>
+        You are not authorized to access this page.
+    </p>
+
+    <a href="{{ url_for('dashboard', user_id=user.id) }}"
+       class="btn btn-primary">
+        Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}
