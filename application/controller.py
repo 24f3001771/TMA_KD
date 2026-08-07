@@ -1,8 +1,8 @@
 #business logic
-from flask import Flask, render_template, redirect, url_for, request,flash,session
+from flask import Flask, render_template, redirect, url_for, request
 # #from app import app---> circular import error
 from flask import current_app as app
-from datetime import datetime,UTC
+from datetime import datetime
 #as i will have all my routes and i will need tables for crud operations so i will require model.py here
 from .models import *
 
@@ -217,111 +217,96 @@ def bookings():
 
 @app.route("/admin/search")
 def admin_search():
-    user=User.query.filter_by(role="admin").first()
+    user=User.query.filter_by(role='admin').first()
+    category=request.args.get("category","") 
+    query=request.args.get("query","").strip()
 
-    category = request.args.get("category", "")
-    query = request.args.get("query", "").strip()
-
-    results = []
-
+    results=[]
     if query:
-
-        # ---------------- USERS ----------------
-        if category == "users":
-
-            if query.isdigit():
-
-                results = User.query.filter(
-                    User.id == int(query)
-                ).all()
-
+        #--------------------users-------------------------
+        if category=="users":
+            if query.isdigit(): #its an id
+                results=User.query.filter(User.id==int(query)).all()
             else:
-
-                results = User.query.filter(
-                    db.or_(
-                        User.full_name.ilike(f"%{query}%"),
-                        User.username.ilike(f"%{query}%")
-                    )
-                ).all()
-
-        # ---------------- STAFF ----------------
-        elif category == "staff":
-
+                results=User.query.filter(db.or_(User.full_name.ilike(f"%{query}%"),User.username.ilike(f"%{query}%"))).all()
+         #--------------------staff------------------------
+        elif category=="staff":
             if query.isdigit():
-
-                results = Staff_profile.query.join(User).filter(
-                    User.id == int(query)
-                ).all()
-
+                results=Staff_profile.query.join(User).filter(User.id==int(query)).all()
             else:
-
-                results = Staff_profile.query.join(User).filter(
-                    db.or_(
-                        User.full_name.ilike(f"%{query}%"),
-                        User.username.ilike(f"%{query}%")
-                    )
-                ).all()
-
-        # ---------------- TREKS ----------------
-        elif category == "treks":
-
+                results=Staff_profile.query.join(User).filter(db.or_(User.full_name.ilike(f"%{query}%"),User.username.ilike(f"%{query}%"))).all()
+         #--------------------treks------------------------
+        elif category=="treks":
             if query.isdigit():
-
-                results = Trek.query.filter(
-                    Trek.id == int(query)
-                ).all()
-
+                results=Trek.query.filter(Trek.id==int(query)).all()
             else:
+                results=Trek.query.filter(Trek.name.ilike(f"%{query}%")).all()
+    return render_template("admin_search.html",user=user,query=query,results=results,category=category)
+            
+# @app.route("/admin/search")
+# def admin_search():
+#     user=User.query.filter_by(role="admin").first()
 
-                results = Trek.query.filter(
-                    Trek.name.ilike(f"%{query}%")
-                ).all()
-
-    return render_template("admin_search.html",admin=admin,category=category,query=query,results=results,user=user)
-
-#     query = request.args.get("query", "")
-#     category = request.args.get("category", "users")
+#     category = request.args.get("category", "")
+#     query = request.args.get("query", "").strip()
 
 #     results = []
 
 #     if query:
 
+#         # ---------------- USERS ----------------
 #         if category == "users":
 
-#             results = User.query.filter(
-#                 db.or_(
-#                     User.username.ilike(f"%{query}%"),
-#                     User.full_name.ilike(f"%{query}%"),
-#                     User.id == query if query.isdigit() else False
-#                 )
-#             ).all()
+#             if query.isdigit():
 
+#                 results = User.query.filter(
+#                     User.id == int(query)
+#                 ).all()
+
+#             else:
+
+#                 results = User.query.filter(
+#                     db.or_(
+#                         User.full_name.ilike(f"%{query}%"),
+#                         User.username.ilike(f"%{query}%")
+#                     )
+#                 ).all()
+
+#         # ---------------- STAFF ----------------
 #         elif category == "staff":
 
-#             results = Staff_profile.query.join(User).filter(
-#                 db.or_(
-#                     User.username.ilike(f"%{query}%"),
-#                     User.full_name.ilike(f"%{query}%"),
-#                     Staff_profile.id == query if query.isdigit() else False
-#                 )
-#             ).all()
+#             if query.isdigit():
 
+#                 results = Staff_profile.query.join(User).filter(
+#                     User.id == int(query)
+#                 ).all()
+
+#             else:
+
+#                 results = Staff_profile.query.join(User).filter(
+#                     db.or_(
+#                         User.full_name.ilike(f"%{query}%"),
+#                         User.username.ilike(f"%{query}%")
+#                     )
+#                 ).all()
+
+#         # ---------------- TREKS ----------------
 #         elif category == "treks":
 
-#             results = Trek.query.filter(
-#                 db.or_(
-#                     Trek.name.ilike(f"%{query}%"),
-#                     Trek.location.ilike(f"%{query}%"),
-#                     Trek.id == query if query.isdigit() else False
-#                 )
-#             ).all()
+#             if query.isdigit():
 
-#     return render_template(
-#         "admin_search.html",
-#         results=results,
-#         query=query,
-#         category=category
-#     )
+#                 results = Trek.query.filter(
+#                     Trek.id == int(query)
+#                 ).all()
+
+#             else:
+
+#                 results = Trek.query.filter(
+#                     Trek.name.ilike(f"%{query}%")
+#                 ).all()
+
+#     return render_template("admin_search.html",admin=admin,category=category,query=query,results=results,user=user)
+
 
 
 # --------------------handling staff routes----------------------#
@@ -531,7 +516,6 @@ def edit_trekker_profile(user_id):
         "edit_trekker_profile.html",
         user=user
     )
-
 
 @app.route("/home/<int:user_id>/bookings")
 def my_bookings(user_id):
