@@ -1,5 +1,5 @@
 #business logic
-from flask import Flask, render_template, redirect, url_for, request,flash
+from flask import Flask, render_template, redirect, url_for, request,flash,session
 # #from app import app---> circular import error
 from flask import current_app as app
 from datetime import datetime,UTC
@@ -214,6 +214,116 @@ def bookings():
     bookings=Booking.query.order_by(Booking.booking_date.desc()).all()
     return render_template("a_bookings.html",bookings=bookings,user=user)
 
+
+@app.route("/admin/search")
+def admin_search():
+    user=User.query.filter_by(role="admin").first()
+
+    category = request.args.get("category", "")
+    query = request.args.get("query", "").strip()
+
+    results = []
+
+    if query:
+
+        # ---------------- USERS ----------------
+        if category == "users":
+
+            if query.isdigit():
+
+                results = User.query.filter(
+                    User.id == int(query)
+                ).all()
+
+            else:
+
+                results = User.query.filter(
+                    db.or_(
+                        User.full_name.ilike(f"%{query}%"),
+                        User.username.ilike(f"%{query}%")
+                    )
+                ).all()
+
+        # ---------------- STAFF ----------------
+        elif category == "staff":
+
+            if query.isdigit():
+
+                results = Staff_profile.query.join(User).filter(
+                    User.id == int(query)
+                ).all()
+
+            else:
+
+                results = Staff_profile.query.join(User).filter(
+                    db.or_(
+                        User.full_name.ilike(f"%{query}%"),
+                        User.username.ilike(f"%{query}%")
+                    )
+                ).all()
+
+        # ---------------- TREKS ----------------
+        elif category == "treks":
+
+            if query.isdigit():
+
+                results = Trek.query.filter(
+                    Trek.id == int(query)
+                ).all()
+
+            else:
+
+                results = Trek.query.filter(
+                    Trek.name.ilike(f"%{query}%")
+                ).all()
+
+    return render_template("admin_search.html",admin=admin,category=category,query=query,results=results,user=user)
+
+#     query = request.args.get("query", "")
+#     category = request.args.get("category", "users")
+
+#     results = []
+
+#     if query:
+
+#         if category == "users":
+
+#             results = User.query.filter(
+#                 db.or_(
+#                     User.username.ilike(f"%{query}%"),
+#                     User.full_name.ilike(f"%{query}%"),
+#                     User.id == query if query.isdigit() else False
+#                 )
+#             ).all()
+
+#         elif category == "staff":
+
+#             results = Staff_profile.query.join(User).filter(
+#                 db.or_(
+#                     User.username.ilike(f"%{query}%"),
+#                     User.full_name.ilike(f"%{query}%"),
+#                     Staff_profile.id == query if query.isdigit() else False
+#                 )
+#             ).all()
+
+#         elif category == "treks":
+
+#             results = Trek.query.filter(
+#                 db.or_(
+#                     Trek.name.ilike(f"%{query}%"),
+#                     Trek.location.ilike(f"%{query}%"),
+#                     Trek.id == query if query.isdigit() else False
+#                 )
+#             ).all()
+
+#     return render_template(
+#         "admin_search.html",
+#         results=results,
+#         query=query,
+#         category=category
+#     )
+
+
 # --------------------handling staff routes----------------------#
 @app.route("/staff/<int:staff_id>/profile",methods=['POST','GET'])
 def profile(staff_id):
@@ -366,11 +476,11 @@ def book_trek(user_id, trek_id):
     user = User.query.get_or_404(user_id)
     trek = Trek.query.get_or_404(trek_id)
 
-    if trek.status != "open":
+    if trek.status != "open": #show only open treks 
         return "Trek is not open."
     if trek.available_slots <= 0:
         return "No slots available."
-    existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first()
+    existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
     if existing_booking:
         return "You have already booked this trek."
     booking = Booking(user_id=user.id,trek_id=trek.id)
@@ -508,15 +618,7 @@ def browse_treks(user_id):
         .all()
     )
 
-    return render_template(
-        "browse_treks.html",
-        user=user,
-        treks=treks,
-        locations=locations,
-        selected_location=location,
-        selected_difficulty=difficulty,
-        search=search
-    )
+    return render_template("browse_treks.html",user=user,treks=treks,locations=locations,selected_location=location,selected_difficulty=difficulty,search=search)
 
 # trek.available_slots -= booking.num_participants
 # trek.available_slots += booking.num_participants

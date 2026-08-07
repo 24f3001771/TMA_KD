@@ -31,18 +31,20 @@ User(Trekker) Dashboard
     <form method="GET" style="display: flex; gap: 10px;">
         <select name="difficulty" class="form-select">
             <option value="">All Difficulties</option>
-            <option value="easy" {% if selected_difficulty == "easy" %} selected {% endif %}>Easy</option>
-            <option value="moderate" {% if selected_difficulty == "moderate" %} selected {% endif %}>Moderate</option>
-            <option value="hard" {% if selected_difficulty == "hard" %} selected {% endif %}>Hard</option>
+            <option value="easy" {% if selected_difficulty=="easy" %} selected {% endif %}>Easy</option>
+            <option value="moderate" {% if selected_difficulty=="moderate" %} selected {% endif %}>Moderate</option>
+            <option value="hard" {% if selected_difficulty=="hard" %} selected {% endif %}>Hard</option>
         </select>
         <select name="location" class="form-select">
             <option value="">All Locations</option>
-            <option value="Nepal">Nepal</option>
-            <option value="Uttarakhand">Uttarakhand</option>
-            <option value="Himachal">Himachal</option>
+            {% for location in locations %}
+            <option value="{{ location[0] }}" {% if selected_location==location[0] %}selected{% endif %}>
+                {{location[0]}}
+            </option>
+            {% endfor %}
         </select>
         <button type="submit" class="btn btn-primary">
-        Filter
+            Filter
         </button>
     </form>
 
@@ -71,7 +73,8 @@ User(Trekker) Dashboard
                     <td>{{ trek.available_slots }}</td>
                     <td>{{ trek.status }}</td>
                     <td>
-                        <a href="{{ url_for('trek_details',user_id=user.id, trek_id=trek.id) }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url_for('trek_details',user_id=user.id, trek_id=trek.id) }}"
+                            class="btn btn-primary btn-sm">
                             Book Now
                         </a>
                     </td>
@@ -102,7 +105,8 @@ User(Trekker) Dashboard
                     <td>{{ booking.booking_date.strftime("%d %b %Y") }}</td>
                     <td>{{ booking.booking_status.title() }}</td>
                     <td>
-                        <a href="{{ url_for('booking_details',user_id=user.id,booking_id=booking.id) }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ url_for('booking_details',user_id=user.id,booking_id=booking.id) }}"
+                            class="btn btn-outline-primary btn-sm">
                             View Details
                         </a>
                     </td>

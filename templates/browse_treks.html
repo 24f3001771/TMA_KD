@@ -24,27 +24,8 @@ Browse Treks
 
     }
 
-    .filter-row {
 
-        display: flex;
-
-        gap: 20px;
-
-        align-items: center;
-
-    }
-
-    .filter-row input {
-
-        width: 350px;
-
-    }
-
-    .filter-row select {
-
-        width: 220px;
-
-    }
+   
 </style>
 {% endblock%}
 
@@ -56,11 +37,11 @@ Browse Treks
 
         <input type="hidden" name="user_id" value="{{user.id}}">
 
-        <div class="filter-row">
+        <div class="filter-row" style="display: flex; gap: 20px;">
 
-            <input type="text" name="search" class="form-control" placeholder="Search Trek..." value="{{search or ''}}">
+            <input type="text" name="search" class="form-control" placeholder="Search Trek..." value="{{ search or ''}}">
 
-            <select name="difficulty" class="form-select">
+            <select name="difficulty" class="form-select" >
 
                 <option value="">All Difficulties</option>
 
@@ -82,7 +63,7 @@ Browse Treks
 
                 <option value="">All Locations</option>
 
-                {% for location in locations %}
+                {% for location in locations %}   #since sqlalchemy will return list of tuples where each of them is object and we want first value of it
 
                 <option value="{{location[0]}}" {% if selected_location==location[0] %}selected{% endif %}>
 
@@ -154,9 +135,7 @@ Browse Treks
 
                     <td>
 
-                        <a href="{{url_for('trek_details',
-user_id=user.id,
-trek_id=trek.id)}}" class="btn btn-primary btn-sm">
+                        <a href="{{url_for('trek_details',user_id=user.id,trek_id=trek.id)}}" class="btn btn-primary btn-sm">
 
                             View Details
 

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Search
+{% endblock %}
+
+{% block head_css %}
+<style>
+    a {
+        text-decoration: none;
+        color: #9799ab;
+
+    }
+
+    .text-most-important {
+        color: #363434;
+        font-weight: bolder;
+    }
+</style>
+{% endblock %}
+
+{% block header_title %}
+Search
+{% endblock %}
+
+{% block content %}
+
+<!-- col-12 (Mobile): Stacks vertically at 100% width.col-sm-6 (Landscape phones/Tablets): Sits 2-across at 50% width.col-md-3 (Laptops/Desktops): Sits 4-across at 25% width. -->
+
+<div class="card shadow-sm p-4">
+    <h3 class="mb-4">
+        Search Users, Staff or Treks
+    </h3>
+    <form action="{{ url_for('admin_search') }}" method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="form-label">
+                    Category
+                </label>
+                <select name="category" class="form-select">
+                    <option value="">Choose</option>
+                    <option value="users" {% if category=="users" %}selected{% endif %}>
+                        Users
+                    </option>
+                    <option value="staff" {% if category=="staff" %}selected{% endif %}>
+                        Staff
+                    </option>
+                    <option value="treks" {% if category=="treks" %}selected{% endif %}>
+                        Treks
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">
+                    Name or ID
+                </label>
+
+                <input type="text" class="form-control" name="query" value="{{query}}" placeholder="Enter name or ID">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary w-100">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% if query %}
+
+<div class="card shadow-sm p-4">
+    <h4>Search Results</h4>
+    {% if results %}
+    <table class="table table-hover">
+        {% if category=="users" %}
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for user in results %}
+
+            <tr>
+
+                <td>{{ user.id }}</td>
+
+                <td>{{ user.full_name }}</td>
+
+                <td>{{ user.username }}</td>
+
+                <td>{{ user.email }}</td>
+
+                <td>{{ user.role }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+        {% elif category=="staff" %}
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Experience</th>
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for staff in results %}
+
+            <tr>
+
+                <td>{{ staff.id }}</td>
+
+                <td>{{ staff.user.full_name }}</td>
+
+                <td>{{ staff.user.username }}</td>
+
+                <td>{{ staff.years_experience }}</td>
+
+                <td>{{ staff.approval_status.title() }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+        {% elif category=="treks" %}
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for trek in results %}
+
+            <tr>
+
+                <td>{{ trek.id }}</td>
+
+                <td>{{ trek.name }}</td>
+
+                <td>{{ trek.location }}</td>
+
+                <td>{{ trek.difficulty.title() }}</td>
+
+                <td>{{ trek.status.title() }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+        {% endif %}
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-warning">
+
+        No results found.
+
+    </div>
+
+    {% endif %}
+
+</div>
+{% endif %}
+
+{% endblock %}
