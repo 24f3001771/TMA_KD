@@ -39,7 +39,7 @@ User(Trekker) Dashboard
             <option value="">All Locations</option>
             {% for location in locations %}
             <option value="{{ location[0] }}" {% if selected_location==location[0] %}selected{% endif %}>
-                {{location[0]}}
+                {{ location[0] }}
             </option>
             {% endfor %}
         </select>

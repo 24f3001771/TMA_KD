@@ -27,7 +27,12 @@ My Profile
     <hr>
     <h3 class="text-center">Statistics</h3>
     <hr>
-    <p><strong>Assigned Treks:</strong> {{staff.assigned_treks}}</p>
+    <p><strong>Assigned Treks:</strong> {{staff.assigned_treks | length}}</p>
+    <ul>
+        {% for trek in staff.assigned_treks %}
+        <li>{{ trek.name }}</li>
+        {% endfor%}
+    </ul>
     <p><strong>Completed:</strong> {{staff.certifications}}</p>
     <p><strong>Participants:</strong> {{staff.approval_status}}</p>
     <div class="button" style="margin: 20px; display: flex; justify-content: center; align-items: end;">

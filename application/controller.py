@@ -9,7 +9,12 @@ from .models import *
 import os
 
 from werkzeug.utils import secure_filename
+@app.route("/")
+def home():
 
+    user = None
+
+    return render_template("home.html", user=user)
 
 @app.route("/login",methods=["GET","POST"])
 def login():
@@ -21,7 +26,7 @@ def login():
         if not user:
             return render_template("not_exist.html")
         if not user.is_active:
-            flash("Your account has been deactivated.")
+            flash("Your account has been deactivated.","danger")
             return redirect(url_for("login"))
         if user.is_blacklisted:
             flash(f"Your account has been blacklisted. Reason: {user.blacklist_reason}","danger")
@@ -82,7 +87,7 @@ def admin():
     treks_count=Trek.query.count()
     user_count=User.query.count()
     staff_count=User.query.filter_by(role="trek staff").count()
-    bookings_count=Booking.query.count()
+    bookings_count=Booking.query.filter(Booking.booking_status!="cancelled").count()
     return render_template("admin_dashboard.html",user=user,recent_bookings=recent_bookings,treks_count=treks_count,user_count=user_count,staff_count=staff_count,bookings_count=bookings_count)
 
 
@@ -186,9 +191,12 @@ def staff():
 @app.route("/approve/<int:staff_id>")
 def approve(staff_id):
     staff=Staff_profile.query.get(staff_id)
+    user_id=staff.user.id
     if not staff:
         return render_template("s_not_exists.html")
     staff.approval_status="approved"
+    staff.user.is_active=True
+    staff.user.is_blacklisted = False
     db.session.commit()
     return redirect("/admin/staff")
 
@@ -198,6 +206,8 @@ def reject(staff_id):
     if not staff:
         return render_template("s_not_exists.html")
     staff.approval_status = "blacklisted"
+    staff.user.is_blacklisted=True
+    staff.user.is_active=False
     db.session.commit()
     return redirect("/admin/staff")
 
@@ -359,9 +369,13 @@ def staff_home(staff_id):
     user=staff.user
     treks=staff.assigned_treks
     treks_count=len(treks)
-    participants=0
+
+    participants = 0
     for trek in treks:
-        participants+= len(trek.bookings)
+        for booking in trek.bookings:
+            if booking.booking_status != "cancelled":
+                participants += booking.num_participants
+    
 
     open_treks=0
     for trek in treks:
@@ -388,11 +402,13 @@ def manage_trek(staff_id, trek_id):
     if not trek:
         return render_template("t_not_found.html")
     bookings=Booking.query.filter_by(trek_id=trek.id).all()
-    total_participants=0
-    for booking in bookings:
-        total_participants+=booking.num_participants
-
-    return render_template("s_manage_trek.html",user=user,trek=trek,bookings=bookings,total_participants=total_participants,staff=staff)
+    participants=0
+    for booking in trek.bookings:
+        if booking.booking_status != "cancelled":
+            participants += booking.num_participants
+    trek.available_slots = trek.max_slots - participants
+    db.session.commit()
+    return render_template("s_manage_trek.html",user=user,trek=trek,bookings=bookings,total_participants=participants,staff=staff)
 
 @app.route("/staff/<int:staff_id>/trek/<int:trek_id>",methods=['POST'])
 def update_trek_details(staff_id,trek_id):
@@ -409,7 +425,7 @@ def start_trek(trek_id,staff_id):
     staff=Staff_profile.query.get_or_404(staff_id)
     trek=Trek.query.get_or_404(trek_id)
     trek.trek_progress='started'
-    trek.status='close'
+    trek.status='closed'
     db.session.commit()
     return redirect(url_for("manage_trek", trek_id=trek.id,staff_id=staff.id))
 
@@ -417,11 +433,12 @@ def start_trek(trek_id,staff_id):
 def complete_trek(trek_id,staff_id):
     staff=Staff_profile.query.get_or_404(staff_id)
     trek = Trek.query.get_or_404(trek_id)
-    trek.progress='completed'
+    trek.trek_progress='completed'
     trek.status = "closed"
     
     for booking in trek.bookings:
-        booking.booking_status = "completed"
+        if booking.booking_status == "booked":
+            booking.booking_status = "completed"
     db.session.commit()
     return redirect(url_for("manage_trek", trek_id=trek.id,staff_id=staff.id))
 
@@ -482,37 +499,23 @@ def user_dashboard(user_id):
     difficulty=request.args.get("difficulty")
     location=request.args.get("location")
     # only open treks should be visible
-    treks=Trek.query.filter_by(status='open')
+    treks=Trek.query.filter(Trek.status=='open')
     if difficulty:
-        treks=Trek.query.filter_by(difficulty=difficulty)
+        treks=treks.filter(Trek.difficulty==difficulty)
     if location:
-        treks = treks.filter_by(location=location)
+        treks = treks.filter(Trek.location==location)
     treks=treks.all()
+    locations = (
+            db.session.query(Trek.location)
+            .distinct()
+            .order_by(Trek.location)
+            .all()
+        )
     bookings=Booking.query.filter_by(user_id=user.id).all()
     # Right now, after filtering, the dropdown will reset to "All Difficulties" and "All Locations", even though the table is filtered.To keep the selected option visible
-    return render_template("trekker_dash.html",treks=treks,user=user,bookings=bookings,selected_difficulty=difficulty,selected_location=location)
+    return render_template("trekker_dash.html",treks=treks,user=user,bookings=bookings,selected_difficulty=difficulty,selected_location=location,locations=locations)
 
-@app.route("/home/<int:user_id>/book/<int:trek_id>", methods=["POST"])
-def book_trek(user_id, trek_id):
 
-    user = User.query.get_or_404(user_id)
-    trek = Trek.query.get_or_404(trek_id)
-
-    if trek.status != "open": #show only open treks 
-        return render_template(
-            "booking_not_allowed.html",
-            message="Bookings are closed for this trek."
-        )
-    if trek.available_slots <= 0:
-        return "No slots available."
-    existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
-    if existing_booking:
-        return "You have already booked this trek."
-    booking = Booking(user_id=user.id,trek_id=trek.id)
-    trek.available_slots -= 1
-    db.session.add(booking)
-    db.session.commit()
-    return redirect(url_for("user_dashboard", user_id=user.id))
 
 @app.route("/home/<int:user_id>/trek/<int:trek_id>")
 def trek_details(user_id, trek_id):
@@ -561,6 +564,29 @@ def my_bookings(user_id):
     user=User.query.get_or_404(user_id)
     bookings=Booking.query.filter_by(user_id=user.id).order_by(Booking.booking_date.desc()).all()
     return render_template("trekker_bookings.html",user=user,bookings=bookings)
+
+
+@app.route("/home/<int:user_id>/book/<int:trek_id>", methods=["GET","POST"])
+def book_trek(user_id, trek_id):
+
+    user = User.query.get_or_404(user_id)
+    trek = Trek.query.get_or_404(trek_id)
+
+    if trek.status != "open": #show only open treks 
+        return render_template(
+            "booking_not_allowed.html",
+            message="Bookings are closed for this trek."
+        )
+    if trek.available_slots <= 0:
+        return "No slots available."
+    existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
+    if existing_booking:
+        return "You have already booked this trek."
+    booking = Booking(user_id=user.id,trek_id=trek.id)
+    trek.available_slots -= booking.num_participants
+    db.session.add(booking)
+    db.session.commit()
+    return redirect(url_for("user_dashboard", user_id=user.id))
 
 @app.route("/home/<int:user_id>/booking/<int:booking_id>")
 def booking_details(user_id, booking_id):
@@ -667,7 +693,16 @@ def browse_treks(user_id):
 # session.pop("user_id")
 
 
+'''
+participants = 0
 
+for booking in trek.bookings:
+    if booking.booking_status != "cancelled":
+        participants += booking.num_participants
+
+
+trek.available_slots = trek.max_slots - participants
+'''
 '''
 @app.route("/staff/<int:staff_id>/profile", methods=["GET", "POST"])
 def staff_profile(staff_id):

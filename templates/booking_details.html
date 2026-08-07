@@ -141,21 +141,6 @@ Booking Details
             </div>
 
             <div class="info-item">
-                <strong>Payment Status :</strong>
-                {{ booking.payment_status.title() }}
-            </div>
-
-            <div class="info-item">
-                <strong>Total Amount :</strong>
-                ₹ {{ booking.total_amount }}
-            </div>
-
-            <div class="info-item">
-                <strong>Amount Paid :</strong>
-                ₹ {{ booking.amount_paid }}
-            </div>
-
-            <div class="info-item">
                 <strong>Notes :</strong>
 
                 {% if booking.notes %}

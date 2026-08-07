@@ -36,7 +36,7 @@ Manage Trek
 
     <p><strong>Total Slots :</strong> {{ trek.max_slots }}</p>
 
-    <form action="{{ url_for('update_trek_details',trek_id=trek.id,staff_id=staff.id) }}" >
+    <form action="{{ url_for('update_trek_details',trek_id=trek.id,staff_id=staff.id) }}" method="post">
         <label class="form-label" for="inp1">Available Slots</label>
         <input type="number" name="available_slots" id="inp1" value="{{ trek.available_slots }}" min="0"
             max="{{ trek.max_slots }}" class="form-control">
@@ -71,7 +71,6 @@ Manage Trek
 
             <th>Booking Status</th>
 
-            <th>Payment</th>
 
         </tr>
 
@@ -95,7 +94,6 @@ Manage Trek
 
             <td>{{ booking.booking_status.title() }}</td>
 
-            <td>{{ booking.payment_status.title() }}</td>
 
         </tr>
 
@@ -106,9 +104,9 @@ Manage Trek
 </table>
 <div class="two-buttons" style="margin: 20px; display: flex; gap: 20px;">
     {% if trek.trek_progress == "upcoming" %}
-    <a href="/staff/trek/{{trek.id}}/start" class="btn btn-outline-primary btn-lg">Mark as Started</a>
+    <a href="{{ url_for('start_trek',staff_id=staff.id,trek_id=trek.id)}}" class="btn btn-outline-primary btn-lg">Mark as Started</a>
     {% elif trek.trek_progress == "started" %}
-    <a href="/staff/trek/{{trek.id}}/complete" class="btn btn-outline-success btn-lg">Mark as Completed</a>
+    <a href="{{ url_for('complete_trek',staff_id=staff.id,trek_id=trek.id)}}" class="btn btn-outline-success btn-lg">Mark as Completed</a>
     {% else %}
     <span class="badge bg-success">
         Trek Completed

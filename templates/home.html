@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Trek Mate</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+
+            overflow-x: hidden;
+
+        }
+
+        .hero {
+
+            height: 100vh;
+
+            background-image: url("../images/hero.jpeg");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-repeat: no-repeat;
+
+            position: relative;
+
+        }
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, .45);
+
+        }
+
+        nav {
+
+            width: 100%;
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            z-index: 10;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 25px 70px;
+
+        }
+
+        .logo {
+
+            color: white;
+
+            font-size: 34px;
+
+            font-weight: 700;
+
+        }
+
+        .links {
+
+            display: flex;
+
+            gap: 35px;
+
+        }
+
+        .links a {
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 18px;
+
+            font-weight: 500;
+
+            transition: .3s;
+
+        }
+
+        .links a:hover {
+
+            color: #8BC34A;
+
+        }
+
+        .overlay {
+
+            position: absolute;
+
+            top: 50%;
+
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            text-align: center;
+
+            color: white;
+
+            width: 80%;
+
+            z-index: 5;
+
+            
+
+        }
+
+        .overlay h1 {
+
+            font-size: 70px;
+
+            margin-bottom: 25px;
+
+            font-weight: 700;
+
+            line-height: 1.2;
+
+        }
+
+        .overlay p {
+
+            font-size: 22px;
+
+            margin-bottom: 45px;
+
+            font-weight: 300;
+
+        }
+
+        .hero {
+
+            height: 100vh;
+
+            background-image: url("../static/images/hero.jpeg");
+
+            background-size: cover;
+
+            background-position: center;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+
+        <nav>
+
+            <div class="logo">
+                🏔 Trek Mate
+            </div>
+
+            <div class="links">
+
+                {% if user %}
+
+                <a href="/dashboard">Dashboard</a>
+
+                <a href="/logout">Logout</a>
+
+                {% else %}
+
+                <a href="/login">Login</a>
+
+                <a href="/signup">Register</a>
+
+                {% endif %}
+
+            </div>
+
+        </nav>
+
+
+        <div class="overlay">
+
+            <h1>
+                Explore the Mountains,
+                <br>
+                Create Memories.
+            </h1>
+
+            <p>
+                Discover breathtaking trekking adventures
+                across India's most scenic trails.
+            </p>
+
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+
+
+

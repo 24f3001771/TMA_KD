@@ -6,6 +6,7 @@ from application.database import db #because i have defined db somwhere else
 
 def create_app():  #return app object
     app=Flask(__name__)# have to consider this for the code of your server or app...all the methods of flask are applicable to this app also...making app as a flask object
+    app.secret_key = "your_secret_key"
     app.debug=True #detect changes and pin point the error
     app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///database.sqlite3' #database uri setup
     db.init_app(app) #This connects SQLAlchemy with Flask.
