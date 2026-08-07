@@ -24,6 +24,7 @@ Treks
                     <th scope="col">Difficulty</th>
                     <th scope="col">Slots</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Progress</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -36,6 +37,7 @@ Treks
                     <td>{{trek.difficulty}}</td>
                     <td>{{trek.available_slots}}</td>
                     <td>{{trek.status}}</td>
+                    <td>{{trek.trek_progress}}</td>
                     <td>
                         <a href="/update/{{trek.id}}/trek" class="btn btn-primary">Edit</a>
                         <a href="/delete/{{trek.id}}/trek" class="btn btn-danger">delete</a>

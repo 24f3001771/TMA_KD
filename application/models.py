@@ -27,7 +27,8 @@ class User(db.Model):
 
     #Relationships
     #with booking table one user can have multiple bookings but only one booking will belong to only one user
-    bookings=db.relationship('Booking',lazy=True, back_populates='user')
+    bookings=db.relationship('Booking',lazy=True, back_populates='user',cascade="all, delete-orphan") #all → apply operations like save, update, delete to the related bookings.
+    # delete-orphan → if a booking no longer belongs to any user, delete it automatically.
     staff_profile=db.relationship('Staff_profile',lazy=True,uselist=False,back_populates='user') #uselist= False means One-to-one (single object) while default it is one-to-many
 
     # parent table - define relationship
@@ -68,15 +69,17 @@ class Trek(db.Model):
     max_slots       = db.Column(db.Integer, nullable=False, default=20)
     available_slots = db.Column(db.Integer, nullable=False, default=20)
     price           = db.Column(db.Numeric, nullable=False, default=0.0)
-    status          = db.Column(Enum('pending','approved','open','closed','completed','cancelled',name='trek_status'),nullable=False, default='pending')  # pending | approved | open | closed | completed | cancelled
+    status          = db.Column(Enum('open','closed',name='trek_status'),nullable=False, default='pending')
+    trek_progress   = db.Column(Enum('upcoming','started','completed',name="trek_progress"),default='upcoming')
     created_at      = db.Column(db.DateTime, default=db.func.now())
     updated_at      = db.Column(db.DateTime, onupdate=db.func.now())
+    image           = db.Column(db.String(200))
     
 
     #Relationships
     assigned_staffs=db.relationship('Staff_profile',secondary='trek_staff_assignment',lazy=True,back_populates='assigned_treks')#many to many relationship
 
-    bookings=db.relationship('Booking',back_populates='trek',lazy=True)#one to many relationship as one trek can have multiple bookings but not other side, as one booking can belong to a single trek 
+    bookings=db.relationship('Booking',back_populates='trek',lazy=True,cascade="all, delete-orphan")#one to many relationship as one trek can have multiple bookings but not other side, as one booking can belong to a single trek 
 
 
 class Booking(db.Model):

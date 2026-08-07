@@ -1,10 +1,14 @@
 #business logic
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for,request,flash
 # #from app import app---> circular import error
 from flask import current_app as app
 from datetime import datetime
 #as i will have all my routes and i will need tables for crud operations so i will require model.py here
 from .models import *
+
+import os
+
+from werkzeug.utils import secure_filename
 
 
 @app.route("/login",methods=["GET","POST"])
@@ -16,6 +20,12 @@ def login():
         user=User.query.filter_by(username=username).first()
         if not user:
             return render_template("not_exist.html")
+        if not user.is_active:
+            flash("Your account has been deactivated.")
+            return redirect(url_for("login"))
+        if user.is_blacklisted:
+            flash(f"Your account has been blacklisted. Reason: {user.blacklist_reason}","danger")
+            return redirect(url_for("login"))
         if user.password != password:
             return render_template("incorrect_p.html")
         staff=user.staff_profile
@@ -104,14 +114,22 @@ def add_trek():
         location=request.form.get("loc")
         difficulty=request.form.get("values")
         duration_days=request.form.get("duration")
-        max_slots=request.form.get("max slots")
+        max_slots=request.form.get("max slots") #contains text.
+        image = request.files.get("image") #contains uploaded files.
+        image_filename = None
+        if image and image.filename != "":
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(app.root_path,"static","images",image_filename)
+            image.save(image_path)
+        else:
+            image_filename = None
         start_date=datetime.strptime(request.form.get("starttime"),"%Y-%m-%d")
         end_date=datetime.strptime(request.form.get("endtime"),"%Y-%m-%d")
         staff_ids=request.form.getlist("staff_ids")
         status=request.form.get("status")
         description=request.form.get("message")
         staffs_assigned=Staff_profile.query.filter(Staff_profile.id.in_(staff_ids)).all()
-        trek=Trek(name=name,location=location,difficulty=difficulty,duration_days=duration_days,start_date=start_date,end_date=end_date,status=status,description=description,max_slots=max_slots)
+        trek=Trek(name=name,location=location,difficulty=difficulty,duration_days=duration_days,start_date=start_date,end_date=end_date,status=status,description=description,max_slots=max_slots,image=image_filename)
         db.session.add(trek)
         trek.assigned_staffs.extend(staffs_assigned)
         db.session.commit()
@@ -196,6 +214,7 @@ def blacklist_user(user_id):
     if not user:
         return render_template("not_exist.html")
     user.is_blacklisted=True
+    user.is_active = False
     db.session.commit()
     return redirect(url_for("manage_users"))
 
@@ -205,6 +224,7 @@ def activate_user(user_id):
     if not user:
         return render_template("not_exist.html")
     user.is_blacklisted = False
+    user.is_active = True
     db.session.commit()
     return redirect(url_for("manage_users"))
 
@@ -374,27 +394,44 @@ def manage_trek(staff_id, trek_id):
 
     return render_template("s_manage_trek.html",user=user,trek=trek,bookings=bookings,total_participants=total_participants,staff=staff)
 
-@app.route("/staff/trek/<int:trek_id>/start")
-def start_trek(trek_id):
+@app.route("/staff/<int:staff_id>/trek/<int:trek_id>",methods=['POST'])
+def update_trek_details(staff_id,trek_id):
     trek=Trek.query.get_or_404(trek_id)
-    trek.status='open'
+    staff=Staff_profile.query.get_or_404(staff_id)
+    trek.available_slots=request.form.get("available_slots")
+    trek.status=request.form.get("status")
     db.session.commit()
-    return redirect(url_for("manage_trek", trek_id=trek.id))
+    return redirect(url_for('manage_trek',staff_id=staff.id,trek_id=trek.id))
 
-@app.route("/staff/trek/<int:trek_id>/complete")
-def complete_trek(trek_id):
+
+@app.route("/staff/<int:staff_id>/trek/<int:trek_id>/start")
+def start_trek(trek_id,staff_id):
+    staff=Staff_profile.query.get_or_404(staff_id)
+    trek=Trek.query.get_or_404(trek_id)
+    trek.trek_progress='started'
+    trek.status='close'
+    db.session.commit()
+    return redirect(url_for("manage_trek", trek_id=trek.id,staff_id=staff.id))
+
+@app.route("/staff/<int:staff_id>/trek/<int:trek_id>/complete")
+def complete_trek(trek_id,staff_id):
+    staff=Staff_profile.query.get_or_404(staff_id)
     trek = Trek.query.get_or_404(trek_id)
-    trek.status = "completed"
+    trek.progress='completed'
+    trek.status = "closed"
+    
     for booking in trek.bookings:
         booking.booking_status = "completed"
     db.session.commit()
-    return redirect(url_for("manage_trek", trek_id=trek.id))
+    return redirect(url_for("manage_trek", trek_id=trek.id,staff_id=staff.id))
+
 
 @app.route("/staff/profile/<int:staff_id>")
 def staff_profile(staff_id):
     staff=Staff_profile.query.get_or_404(staff_id)
     user=staff.user
     return render_template("staff_profile.html",user=user,staff=staff)
+
 
 @app.route("/staff/<int:staff_id>/profile/edit", methods=["GET", "POST"])
 def edit_staff_profile(staff_id):
@@ -462,7 +499,10 @@ def book_trek(user_id, trek_id):
     trek = Trek.query.get_or_404(trek_id)
 
     if trek.status != "open": #show only open treks 
-        return "Trek is not open."
+        return render_template(
+            "booking_not_allowed.html",
+            message="Bookings are closed for this trek."
+        )
     if trek.available_slots <= 0:
         return "No slots available."
     existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
@@ -473,7 +513,6 @@ def book_trek(user_id, trek_id):
     db.session.add(booking)
     db.session.commit()
     return redirect(url_for("user_dashboard", user_id=user.id))
-    bookings = Booking.query.filter_by(user_id=user.id).all()
 
 @app.route("/home/<int:user_id>/trek/<int:trek_id>")
 def trek_details(user_id, trek_id):

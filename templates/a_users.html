@@ -46,11 +46,11 @@ Users
 
         <td>
           {% if user.is_blacklisted %}
-          <a href="/user/activate/{{ user.id }}" class="btn btn-success btn-sm">
+          <a href="{{ url_for('activate_user',user_id=user.id) }}" class="btn btn-success btn-sm">
             Activate
           </a>
           {% else %}
-          <a href="/user/blacklist{{ user.id }}" class="btn btn-danger btn-sm">
+          <a href="{{ url_for('blacklist_user',user_id=user.id) }}" class="btn btn-danger btn-sm">
             Blacklist
           </a>
           {% endif %}

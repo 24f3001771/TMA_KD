@@ -109,20 +109,20 @@ Add New Trek
 
 {% block content %}
 
-<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks card p-4 mb-4"
-method="POST">
+<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks card p-4 mb-4 " 
+method="POST" enctype="multipart/form-data">
   <div class="left">
     <div class="l">
       <label for="name">Trek Name</label>
-      <input type="text" id="name" name="tname" value="{{ trek.name if trek else '' }}">
+      <input type="text" id="name" name="tname" value="{{ trek.name if trek else '' }}" required>
     </div>
     <div class="l">
       <label for="loc">Location</label>
-      <input type="text" name="loc" id="loc" value="{{ trek.location if trek else '' }}">
+      <input type="text" name="loc" id="loc" value="{{ trek.location if trek else '' }}" required>
     </div>
     <div class="l">
       <label for="level">Difficulty</label>
-      <select name="values" id="level">
+      <select name="values" id="level" required>
         <option value="">--Select Level--</option>
         <option value="easy" {% if trek and trek.difficulty=='easy' %} selected {% endif %}>Easy</option>
         <option value="moderate" {% if trek and trek.difficulty=='moderate' %} selected {% endif %}>Moderate</option>
@@ -131,17 +131,22 @@ method="POST">
     </div>
     <div class="l">
       <label for="duration">Duration(Days)</label>
-      <input type="number" id="duration" name="duration" value="{{ trek.duration_days if trek else '' }}">
+      <input type="number" id="duration" name="duration" value="{{ trek.duration_days if trek else '' }}" required>
     </div>
     <div class="l">
       <label for="slots">Maximum Slots</label>
-      <input type="number" name="max slots" id="slots" value="{{ trek.max_slots if trek else '' }}">
+      <input type="number" name="max slots" id="slots" value="{{ trek.max_slots if trek else '' }}" required>
+    </div>
+    <div class="l" style="display: flex;">
+      <!-- type=file means choose file and  enctype="multipart/form-data as other values are text but img are binary , accept="image/*" jpg,png-->
+      <input type="text" name="trek_name" placeholder="trek name">     
+      <input type="file" name="trek_image" accept="image/*">
     </div>
   </div>
   <div class="right">
     <div class="r">
       <label for="date">Start Date</label>
-      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy" value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}">
+      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy" value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}" required>
     </div>
     <div class="r">
       <label for="endtime">End Date</label>
@@ -157,13 +162,9 @@ method="POST">
     </div>
     <div class="r">
       <label for="status">Status</label>
-      <select name="status" id="status">
-        <option value="pending" {% if trek and trek.status=="pending" %} selected {% endif %}>Pending</option>
-        <option value="approved" {% if trek and trek.status=="approved" %} selected {% endif %}>Approved</option>
+      <select name="status" id="status" >
         <option value="open" {% if trek and trek.status=="open" %} selected {% endif %}>Open</option>
         <option value="closed" {% if trek and trek.status=="closed" %} selected {% endif %}>Closed</option>
-        <option value="completed" {% if trek and trek.status=="completed" %} selected {% endif %}>Completed</option>
-        <option value="cancelled" {% if trek and trek.status=="cancelled" %} selected {% endif %}>Cancelled</option>
       </select>
     </div>
     <div class="r">
