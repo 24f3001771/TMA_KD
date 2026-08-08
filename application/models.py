@@ -9,7 +9,6 @@ trek_staff_assignment = db.Table("trek_staff_assignment",
     db.Column('role_on_trek',db.String(),nullable=True)
     )
 
-
 class User(db.Model):
     __tablename__='user'
     id= db.Column(db.Integer, primary_key=True)
