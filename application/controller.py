@@ -9,12 +9,11 @@ from .models import *
 import os
 
 from werkzeug.utils import secure_filename
+
+
 @app.route("/")
 def home():
-
-    user = None
-
-    return render_template("home.html", user=user)
+    return render_template("home.html")
 
 @app.route("/login",methods=["GET","POST"])
 def login():
@@ -273,71 +272,6 @@ def admin_search():
                 results=Trek.query.filter(Trek.name.ilike(f"%{query}%")).all()
     return render_template("admin_search.html",user=user,query=query,results=results,category=category)
             
-# @app.route("/admin/search")
-# def admin_search():
-#     user=User.query.filter_by(role="admin").first()
-
-#     category = request.args.get("category", "")
-#     query = request.args.get("query", "").strip()
-
-#     results = []
-
-#     if query:
-
-#         # ---------------- USERS ----------------
-#         if category == "users":
-
-#             if query.isdigit():
-
-#                 results = User.query.filter(
-#                     User.id == int(query)
-#                 ).all()
-
-#             else:
-
-#                 results = User.query.filter(
-#                     db.or_(
-#                         User.full_name.ilike(f"%{query}%"),
-#                         User.username.ilike(f"%{query}%")
-#                     )
-#                 ).all()
-
-#         # ---------------- STAFF ----------------
-#         elif category == "staff":
-
-#             if query.isdigit():
-
-#                 results = Staff_profile.query.join(User).filter(
-#                     User.id == int(query)
-#                 ).all()
-
-#             else:
-
-#                 results = Staff_profile.query.join(User).filter(
-#                     db.or_(
-#                         User.full_name.ilike(f"%{query}%"),
-#                         User.username.ilike(f"%{query}%")
-#                     )
-#                 ).all()
-
-#         # ---------------- TREKS ----------------
-#         elif category == "treks":
-
-#             if query.isdigit():
-
-#                 results = Trek.query.filter(
-#                     Trek.id == int(query)
-#                 ).all()
-
-#             else:
-
-#                 results = Trek.query.filter(
-#                     Trek.name.ilike(f"%{query}%")
-#                 ).all()
-
-#     return render_template("admin_search.html",admin=admin,category=category,query=query,results=results,user=user)
-
-
 
 # --------------------handling staff routes----------------------#
 @app.route("/staff/<int:staff_id>/profile",methods=['POST','GET'])
@@ -447,7 +381,19 @@ def complete_trek(trek_id,staff_id):
 def staff_profile(staff_id):
     staff=Staff_profile.query.get_or_404(staff_id)
     user=staff.user
-    return render_template("staff_profile.html",user=user,staff=staff)
+    completed_treks = 0
+
+    for trek in staff.assigned_treks:
+        if trek.trek_progress == "completed":
+            completed_treks += 1
+    participants = 0
+
+    for trek in staff.assigned_treks:
+        for booking in trek.bookings:
+            if booking.booking_status != "cancelled":
+                participants += booking.num_participants
+    return render_template("staff_profile.html",user=user,staff=staff,completed_treks=completed_treks,
+    participants=participants)
 
 
 @app.route("/staff/<int:staff_id>/profile/edit", methods=["GET", "POST"])
@@ -492,6 +438,25 @@ def edit_staff_profile(staff_id):
         user=user
     )
 
+@app.route("/staff/<int:staff_id>/participants")
+def staff_participants(staff_id):
+
+    staff = Staff_profile.query.get_or_404(staff_id)
+
+    participants = []
+
+    for trek in staff.assigned_treks:
+        for booking in trek.bookings:
+            if booking.booking_status != "cancelled":
+                participants.append(booking)
+
+    return render_template(
+        "staff_participants.html",
+        staff=staff,
+        user=staff.user,
+        participants=participants
+    )
+
 # -------------------------------------------trekker dashboard--------------------------------------------------#
 @app.route("/home/<int:user_id>/dashboard")
 def user_dashboard(user_id):
@@ -514,7 +479,6 @@ def user_dashboard(user_id):
     bookings=Booking.query.filter_by(user_id=user.id).all()
     # Right now, after filtering, the dropdown will reset to "All Difficulties" and "All Locations", even though the table is filtered.To keep the selected option visible
     return render_template("trekker_dash.html",treks=treks,user=user,bookings=bookings,selected_difficulty=difficulty,selected_location=location,locations=locations)
-
 
 
 @app.route("/home/<int:user_id>/trek/<int:trek_id>")
@@ -582,7 +546,8 @@ def book_trek(user_id, trek_id):
     existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
     if existing_booking:
         return "You have already booked this trek."
-    booking = Booking(user_id=user.id,trek_id=trek.id)
+    booking = Booking(user_id=user.id,trek_id=trek.id,num_participants=1)
+    print(booking.num_participants)
     trek.available_slots -= booking.num_participants
     db.session.add(booking)
     db.session.commit()
