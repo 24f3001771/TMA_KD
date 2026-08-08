@@ -70,7 +70,7 @@
                     <span class="material-icons-outlined">person</span> <a href="{{url_for('staff_profile',staff_id=staff.id)}}">Profile</a>
                 </li>
                 <li class="sidebar-list-item">
-                    <span class="material-icons-outlined">group</span> <a href="">Participants</a>
+                    <span class="material-icons-outlined">group</span> <a href="{{ url_for('staff_participants', staff_id=staff.id) }}">Participants</a>
                 </li>
                 <li class="sidebar-list-item">
                     <span class="material-icons-outlined">logout</span> <a href="/login">Logout</a>
