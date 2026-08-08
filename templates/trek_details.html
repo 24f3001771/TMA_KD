@@ -64,7 +64,7 @@ User-Trek Details & Booking
 
         <div class="trek-image">
 
-            <img src="{{ url_for('static', filename='images/' + trek.image) }}" alt="Trek Image">
+            <img src="{{ url_for('static',filename='images/' ~ (trek.image or 'default.jpg')) }}">
 
         </div>
 
