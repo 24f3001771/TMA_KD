@@ -72,7 +72,7 @@ My Dashboard
           <tr>
             <th scope="row">{{trek.name}}</th>
             <td>{{ trek.location}}</td>
-            <td>{{ trek.bookings | length }}</td>
+            <td>{{trek_participants[trek.id]}}</td>
             <td>{{ trek.max_slots }}</td>
             <td>{{trek.status}}</td>
             <td>

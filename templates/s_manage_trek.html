@@ -43,10 +43,10 @@ Manage Trek
 
         <label class="form-label" for="inp2">Status</label>
         <select name="status" id="inp2" class="form-select">
-            <option value="open" {% if selected_status=="open" %}selected{% endif %}>Open</option>
-            <option value="closed" {% if selected_status=="closed" %}selected{% endif %}>Closed</option>
+            <option value="open" {% if trek.status=="open" %}selected{% endif %}>Open</option>
+            <option value="closed" {% if trek.status=="closed" %}selected{% endif %}>Closed</option>
         </select>
-        <button class="btn btn-primary mt-3">Save Changes</button>
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
     </form>
 
 </div>
