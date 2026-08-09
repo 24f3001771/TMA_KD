@@ -118,7 +118,7 @@ def add_trek():
         location=request.form.get("loc")
         difficulty=request.form.get("values")
         duration_days=request.form.get("duration")
-        max_slots=request.form.get("max slots") #contains text.
+        max_slots=request.form.get("max_slots") #contains text.
         image = request.files.get("image") #contains uploaded files.
         image_filename = None
         if image and image.filename != "":
@@ -154,7 +154,7 @@ def update_trek(trek_id):
         trek.location = request.form.get("loc")
         trek.difficulty = request.form.get("values")
         trek.duration_days = request.form.get("duration")
-        trek.max_slots = request.form.get("max slots")
+        trek.max_slots = request.form.get("max_slots")
         trek.start_date = datetime.strptime(
             request.form.get("starttime"),
             "%Y-%m-%d"
@@ -167,6 +167,7 @@ def update_trek(trek_id):
 
         trek.status = request.form.get("status")
         trek.description = request.form.get("message")
+        trek.trek_progress=request.form.get("trek_progress")
         staff_ids = request.form.getlist("staff_ids")
         staffs_assigned=Staff_profile.query.filter(Staff_profile.id.in_(staff_ids)).all()
 
@@ -290,7 +291,7 @@ def profile(staff_id):
         staff.years_experience = request.form.get("experience")
         staff.profile_completed = True
         db.session.commit()
-        # flash("Profile updated successfully!")
+    
         return render_template("staff_pending.html")
     return render_template("staff_pending_form.html",staff=staff)
 
@@ -316,7 +317,15 @@ def staff_home(staff_id):
         if trek.status=='open':
             open_treks+=1
 
-    return render_template("staff_dashboard.html",user=user,treks=treks,treks_count=treks_count,participants_count=participants,open_treks_count=open_treks,staff=staff)
+    trek_participants={}
+    for trek in treks:
+        total=0
+        for booking in trek.bookings:
+            if booking.booking_status!="cancelled":
+                total+=booking.num_participants
+        trek_participants[trek.id]=total
+
+    return render_template("staff_dashboard.html",user=user,treks=treks,treks_count=treks_count,participants_count=participants,open_treks_count=open_treks,staff=staff,trek_participants=trek_participants)
 
 @app.route("/staff/treks/<int:staff_id>")
 def staff_treks(staff_id):
@@ -340,11 +349,11 @@ def manage_trek(staff_id, trek_id):
     for booking in trek.bookings:
         if booking.booking_status != "cancelled":
             participants += booking.num_participants
-    trek.available_slots = trek.max_slots - participants
+    #------------------------- trek.available_slots = trek.max_slots - participants removing this because i want staff value to be displayed 
     db.session.commit()
     return render_template("s_manage_trek.html",user=user,trek=trek,bookings=bookings,total_participants=participants,staff=staff)
 
-@app.route("/staff/<int:staff_id>/trek/<int:trek_id>",methods=['POST'])
+@app.route("/staff/<int:staff_id>/trek/<int:trek_id>",methods=['POST']) #agar maine value yha kuch change kiya to upper vale route me bhejna hoga 
 def update_trek_details(staff_id,trek_id):
     trek=Trek.query.get_or_404(trek_id)
     staff=Staff_profile.query.get_or_404(staff_id)
@@ -381,13 +390,13 @@ def complete_trek(trek_id,staff_id):
 def staff_profile(staff_id):
     staff=Staff_profile.query.get_or_404(staff_id)
     user=staff.user
-    completed_treks = 0
 
+    completed_treks = 0
     for trek in staff.assigned_treks:
         if trek.trek_progress == "completed":
             completed_treks += 1
-    participants = 0
 
+    participants = 0
     for trek in staff.assigned_treks:
         for booking in trek.bookings:
             if booking.booking_status != "cancelled":
@@ -546,8 +555,7 @@ def book_trek(user_id, trek_id):
     existing_booking = Booking.query.filter_by(user_id=user.id,trek_id=trek.id).first() 
     if existing_booking:
         return "You have already booked this trek."
-    booking = Booking(user_id=user.id,trek_id=trek.id,num_participants=1)
-    print(booking.num_participants)
+    booking = Booking(user_id=user.id,trek_id=trek.id,num_participants=1) #######---------------------------
     trek.available_slots -= booking.num_participants
     db.session.add(booking)
     db.session.commit()
@@ -633,6 +641,7 @@ def browse_treks(user_id):
     )
 
     return render_template("browse_treks.html",user=user,treks=treks,locations=locations,selected_location=location,selected_difficulty=difficulty,search=search)
+
 
 # trek.available_slots -= booking.num_participants
 # trek.available_slots += booking.num_participants

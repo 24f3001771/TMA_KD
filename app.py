@@ -24,7 +24,7 @@ if __name__== "__main__": #if you are running this app from here only then only 
         #by default create admin
         Admin=User.query.filter_by(role='admin').first()
         if Admin is None:
-            Admin=User(username='admin',email='dhullkhushi365@gmail.com',password='16102005',full_name='khushi dhull',phone='123456789',role='admin')
+            Admin=User(username='admin',email='dhullkhushi365@gmail.com',password='16102005',full_name='khushi dhull',phone='923456789',role='admin')
             db.session.add(Admin)
             db.session.commit()
     app.run()

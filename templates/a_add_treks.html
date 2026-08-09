@@ -9,7 +9,6 @@ Add/Edit Treks
 <style>
   .form-add-treks {
     box-sizing: border-box;
-    height: 100vh;
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -21,7 +20,7 @@ Add/Edit Treks
     padding: 25px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
     position: relative;
-    padding-bottom: 80px;
+    padding-bottom: 90px;
 
   }
 
@@ -32,7 +31,8 @@ Add/Edit Treks
 
   .form-add-treks .left,
   .form-add-treks .right {
-    height: 500px;
+    height: 700px;
+    width: 50%;
 
   }
 
@@ -58,7 +58,8 @@ Add/Edit Treks
   .r label {
     width: 150px;
     font-weight: 500;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+      'Helvetica Neue', sans-serif;
   }
 
   .l {
@@ -70,29 +71,34 @@ Add/Edit Treks
   .l label {
     width: 150px;
     font-weight: 500;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+      'Helvetica Neue', sans-serif;
   }
 
-  .r input,
-  .r select {
-    flex: 1;
-  }
+
 
   .l input,
-  .l select {
+  .l select,
+  .r input,
+  .r select,
+  .r textarea {
     flex: 1;
+    box-sizing: border-box;
   }
 
   textarea {
-    width: 100%;
+    resize: vertical;
     min-height: 120px;
   }
-  .buttons{
+
+  .buttons {
     position: absolute;
+
     bottom: 20px;
     right: 25px;
 
     display: flex;
+
     gap: 15px;
   }
 </style>
@@ -109,8 +115,9 @@ Add New Trek
 
 {% block content %}
 
-<form action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}" class="form-add-treks card p-4 mb-4 " 
-method="POST" enctype="multipart/form-data">
+<form
+  action="{% if trek %} {{ url_for('update_trek',trek_id=trek.id) }} {% else %} {{ url_for('add_trek') }}{% endif %}"
+  class="form-add-treks card " method="POST" enctype="multipart/form-data">
   <div class="left">
     <div class="l">
       <label for="name">Trek Name</label>
@@ -135,36 +142,48 @@ method="POST" enctype="multipart/form-data">
     </div>
     <div class="l">
       <label for="slots">Maximum Slots</label>
-      <input type="number" name="max slots" id="slots" value="{{ trek.max_slots if trek else '' }}" required>
+      <input type="number" name="max_slots" id="slots" value="{{ trek.max_slots if trek else '' }}" required>
     </div>
     <div class="l" style="display: flex;">
       <!-- type=file means choose file and  enctype="multipart/form-data as other values are text but img are binary , accept="image/*" jpg,png-->
-      <input type="text" name="trek_name" placeholder="trek name">     
+      <input type="text" name="trek_name" placeholder="trek name">
       <input type="file" name="trek_image" accept="image/*">
     </div>
   </div>
   <div class="right">
     <div class="r">
       <label for="date">Start Date</label>
-      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy" value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}" required>
+      <input type="date" name="starttime" id="date" placeholder="dd/mm/yyyy"
+        value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}" required>
     </div>
     <div class="r">
       <label for="endtime">End Date</label>
-      <input type="date" name="endtime" id="endtime" placeholder="dd/mm/yyyy" value="{{ trek.end_date.strftime('%Y-%m-%d') if trek and trek.end_date else '' }}">
+      <input type="date" name="endtime" id="endtime" placeholder="dd/mm/yyyy"
+        value="{{ trek.end_date.strftime('%Y-%m-%d') if trek and trek.end_date else '' }}">
     </div>
     <div class="r">
       <label for="assign_staff">Assign Staff</label>
       <select name="staff_ids" id="assign_staff" multiple size="2" style="height: 120px; width: 100%;">
         {% for staff in staffs %}
-        <option value="{{staff.id}}" {% if trek and staff in trek.assigned_staffs %} selected {% endif %}> {{staff.user.username}} ({{ staff.expertise }})</option>
+        <option value="{{staff.id}}" {% if trek and staff in trek.assigned_staffs %} selected {% endif %}>
+          {{staff.user.username}} ({{ staff.expertise }})</option>
         {% endfor %}
       </select>
     </div>
     <div class="r">
       <label for="status">Status</label>
-      <select name="status" id="status" >
+      <select name="status" id="status">
         <option value="open" {% if trek and trek.status=="open" %} selected {% endif %}>Open</option>
         <option value="closed" {% if trek and trek.status=="closed" %} selected {% endif %}>Closed</option>
+      </select>
+    </div>
+    <div class="r">
+      <label for="prog">Trek Progress</label>
+      <select name="trek_progress" id="prog">
+        <option value="upcoming" {% if trek and trek.trek_progress=="upcoming" %} selected {% endif %}>upcoming</option>
+        <option value="started" {% if trek and trek.trek_progress=="started" %} selected {% endif %}>started</option>
+        <option value="completed" {% if trek and trek.trek_progress=="completed" %} selected {% endif %}>completed
+        </option>
       </select>
     </div>
     <div class="r">
@@ -172,7 +191,7 @@ method="POST" enctype="multipart/form-data">
       <textarea id="message" name="message" rows="4">{{ trek.description if trek else '' }}</textarea>
     </div>
   </div>
-  <div class="buttons" style="gap: 15px; margin-top: 20px; position: absolute; ">
+  <div class="buttons">
     <a href="/admin/treks" class="btn btn-danger">Cancel</a>
     <button type="submit" class="btn btn-success">{% if trek %} Update Trek {% else %} Save Trek {% endif %}</button>
   </div>
